@@ -1,0 +1,56 @@
+actor DynamomanBolt1_CI:TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1",0,0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1B",0,0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1R",0,0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1O",0,0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1P",0,0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt2_CI:TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2",0,0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2B",0,0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2R",0,0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2O",0,0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2P",0,0)
+		goto Done
+	}
+}
+
+actor DynamoHomingOrbB:DynamoHomingOrb {
+	translation"202:202=205:205","199:199=74:74"
+}
+
+actor DynamoHomingOrbR:DynamoHomingOrb {
+	translation"202:202=171:171","199:199=41:41"
+}
+
+actor DynamoHomingOrbO:DynamoHomingOrb {
+	translation"202:202=104:104","199:199=128:128"
+}
+
+actor DynamoHomingOrbP:DynamoHomingOrb {
+	translation"202:202=229:229","199:199=232:232"
+}
+

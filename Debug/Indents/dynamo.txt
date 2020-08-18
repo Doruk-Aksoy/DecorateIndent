@@ -1,0 +1,4671 @@
+actor LightningBoltBoss : BaseMM8BDMWep_CBM {
+	tag "$TAGC_BA"
+	dropitem "DynamoTendrilWepCDropped"
+	Weapon.AmmoUse 0
+	Weapon.AmmoGive 240
+	Weapon.AmmoGive2 0
+	Inventory.Pickupmessage "You get an incurable electricity leak : / "
+	Obituary "$OB_LIGHTNINGBOLT"
+	weapon.ammotype "DynamoElectricity"
+	weapon.ammotype2 "DynamoHealAmmo"
+	+WEAPON.NOAUTOAIM
+	States {
+		Spawn:
+			C_0B A 1
+		loop
+		Ready:
+			DYHD A 0 ACS_ExecuteAlways(998, 0, DYE_DYNAMOMAN)
+			DYHD A 0 //A_GunFlash
+			DYHD A 0 A_JumpIfInventory("DynamoItemFlag", 1, "ItemRecharge")
+			DYHD A 2 A_WeaponReady
+			DYHD A 0 A_GiveInventory("DynamoElectricity", 2)
+			DYHD A 0 A_GiveInventory("DynamoARGS_PG2", 1)
+		Goto Ready+2
+		Deselect:
+			TNT1 AAAAAAAAAAAAAAAAAAAAAA 0 A_Lower
+			DYHD A 1 A_Lower
+		Loop
+		Select:
+			TNT1 AAAAAAAAAAAAAAAAAAAAAA 0 A_Raise
+			DYHD A 1 A_Raise
+		Loop
+		Fire:
+			DYHD A 0 A_JumpIfInventory("DynamoItemFlag", 1, "EndCharge")
+			DYHD A 0 A_JumpIfInventory("IsBot", 1, "BotFire")
+			DYHD A 0 A_GiveInventory("DynamoCoolDownFlag", 1)
+			DYHD A 0 A_GiveInventory("DynamoIsScanning", 1)
+			DYHD A 0 A_GiveInventory("VivifyDelay5", 1)
+			DYHD A 0 A_Refire(1)
+			DYHD F 2 A_GunFlash
+			DYHD G 2
+			DYHD G 0 ACS_ExecuteAlways(CORE_ACS_191, 0, APROP_Speed, 3, 4)//75% speed
+			DYHD G 0 A_SetUserVar("user_wepangle", angle)
+			ResetToZero:
+			DYHD G 0 A_SetUserVar("user_wepangle2", 0)
+		goto Fire3
+		ResetToZeroA:
+			DYHD G 0 A_SetUserVar("user_wepangle2", 0)
+		goto Fire3a
+		Fire2a:
+			DYHD G 0 A_SetUserVar("user_wepangle2", ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)+8)
+			DYHD G 0 A_JumpIf(ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)>=360, "ResetToZeroA")
+			Fire3a:
+			DYHD G 0 A_GiveInventory("DynamoElectricity", 3)
+			DYHD G 0 A_GiveInventory("DynamoARGS_PG3", 1)
+			DYHD G 0 A_GiveInventory("DynamomanMain1_CI")
+			DYHD G 0 A_JumpIfInventory("IsBot", 1, "BotFire2")
+			DYHD G 0 A_TakeInventory("DynamoStaminaFlag", 1)
+			DYHD G 1 A_WeaponReady(WRF_NOPRIMARY|WRF_NOSWITCH)
+			DYHD G 0 A_JumpIfInventory("DynamoStaminaFlag", 1, "Fire3b")
+		goto FireLightning
+		Fire3b:
+			DYHD G 0 A_Refire("Fire2a")
+		goto FireLightning
+		Fire2:
+			DYHD G 0 A_JumpIfInventory("DynamoElectricity", 180, "Fire2a")
+			DYHD G 0 A_SetUserVar("user_wepangle2", ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)+8)
+			DYHD G 0 A_JumpIf(ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)>=360, "ResetToZero")
+			Fire3:
+			DYHD G 0 A_GiveInventory("DynamoElectricity", 3)
+			DYHD G 0 A_GiveInventory("DynamoARGS_PG3", 1)
+			DYHD G 0 A_GiveInventory("DynamomanMain1_CI")DYHD G 1
+			DYHD G 0 A_Refire("Fire2")
+			FireLightning:
+			DYHD G 0 A_SetArg(2, 0)
+			DYHD G 0 A_GiveInventory("DynamoIsAiming", 1)
+			DYHD G 0 A_PlaySoundEx("weapon / dynamoorbs", "Weapon")
+			DYHD G 2 A_SpawnItemEx("DynamoBallFXX", 4, 0, 32, 0, 0, 28, 0, 1)
+			DYHD G 0 A_PlaySoundEx("weapon / dynamoorbs", "Weapon")
+			DYHD G 2 A_SpawnItemEx("DynamoBallFXX", 4, 0, 32, 0, 0, 28, 0, 1)
+			DYHD G 0 A_PlaySoundEx("weapon / dynamoorbs", "Weapon")
+			DYHD G 2 A_SpawnItemEx("DynamoBallFXX", 4, 0, 32, 0, 0, 28, 0, 1)
+			DYHD G 0 A_PlaySoundEx("weapon / lightningbolt", "Weapon")
+			DYHD G 2 A_SpawnItemEx("DLightningStartFX1", 4, 0, 48, 0, 0, 0, 0, 1)
+			DYHD G 2 A_SpawnItemEx("DLightningStartFX2", 4, 0, 48, 0, 0, 0, 0, 1)
+			DYHD G 0 A_GiveInventory("DynamomanMain2_CI", 1) //A_FireCustomMissile("DynamoOrbThrow", 0, 0, 8, 0)
+		goto FT0
+		FT0:
+			DYHD G 0 A_JumpIfInventory("DynaFlag1", 1, "FT1")
+			DYHD G 0 A_JumpIfInventory("DynaFlag2", 1, "FT2")
+			DYHD G 0 A_JumpIfInventory("DynaFlag3", 1, "FT3")
+			DYHD G 0 A_JumpIfInventory("DynaFlag4", 1, "FT4")
+			DYHD G 0 A_JumpIfInventory("DynaFlag5", 1, "FT5")
+			DYHD G 0 A_JumpIfInventory("DynaFlag6", 1, "FT6")
+			DYHD G 0 A_JumpIfInventory("DynaFlag7", 1, "FT7")
+			DYHD G 0 A_JumpIfInventory("DynaFlag8", 1, "FT8")
+			DYHD G 0 A_JumpIfInventory("DynaFlag9", 1, "FT9")
+			DYHD G 0 A_JumpIfInventory("DynaFlag10", 1, "FT10")
+			DYHD G 0 A_JumpIfInventory("DynaFlag11", 1, "FT11")
+			DYHD G 0 A_JumpIfInventory("DynaFlag12", 1, "FT12")
+			DYHD G 0 A_JumpIfInventory("DynaFlag13", 1, "FT13")
+			DYHD G 0 A_JumpIfInventory("DynaFlag14", 1, "FT14")
+			DYHD G 0 A_JumpIfInventory("DynaFlag15", 1, "FT15")
+			DYHD G 0 A_JumpIfInventory("DynaFlag16", 1, "FT16")
+			DYHD G 0 A_JumpIfInventory("DynaFlag17", 1, "FT17")
+			DYHD G 0 A_JumpIfInventory("DynaFlag18", 1, "FT18")
+			DYHD G 0 A_JumpIfInventory("DynaFlag19", 1, "FT19")
+			DYHD G 0 A_JumpIfInventory("DynaFlag20", 1, "FT20")
+			DYHD G 0 A_JumpIfInventory("DynaFlag21", 1, "FT21")
+			DYHD G 0 A_JumpIfInventory("DynaFlag22", 1, "FT22")
+			DYHD G 0 A_JumpIfInventory("DynaFlag23", 1, "FT23")
+			DYHD G 0 A_JumpIfInventory("DynaFlag24", 1, "FT24")
+			DYHD G 0 A_JumpIfInventory("DynaFlag25", 1, "FT25")
+			DYHD G 0 A_JumpIfInventory("DynaFlag26", 1, "FT26")
+			DYHD G 0 A_JumpIfInventory("DynaFlag27", 1, "FT27")
+			DYHD G 0 A_JumpIfInventory("DynaFlag28", 1, "FT28")
+			DYHD G 0 A_JumpIfInventory("DynaFlag29", 1, "FT29")
+			DYHD G 0 A_JumpIfInventory("DynaFlag30", 1, "FT30")
+			DYHD G 0 A_JumpIfInventory("DynaFlag31", 1, "FT31")
+			DYHD G 0 A_JumpIfInventory("DynaFlag32", 1, "FT32")
+			DYHD G 0 A_JumpIfInventory("DynaFlag33", 1, "FT33")
+			DYHD G 0 A_JumpIfInventory("DynaFlag34", 1, "FT34")
+			DYHD G 0 A_JumpIfInventory("DynaFlag35", 1, "FT35")
+			DYHD G 0 A_JumpIfInventory("DynaFlag36", 1, "FT36")
+			DYHD G 0 A_JumpIfInventory("DynaFlag37", 1, "FT37")
+			DYHD G 0 A_JumpIfInventory("DynaFlag38", 1, "FT38")
+			DYHD G 0 A_JumpIfInventory("DynaFlag39", 1, "FT39")
+			DYHD G 0 A_JumpIfInventory("DynaFlag40", 1, "FT40")
+			DYHD G 0 A_JumpIfInventory("DynaFlag41", 1, "FT41")
+			DYHD G 0 A_JumpIfInventory("DynaFlag42", 1, "FT42")
+			DYHD G 0 A_JumpIfInventory("DynaFlag43", 1, "FT43")
+			DYHD G 0 A_JumpIfInventory("DynaFlag44", 1, "FT44")
+			DYHD G 0 A_JumpIfInventory("DynaFlag45", 1, "FT45")
+			DYHD G 0 A_JumpIfInventory("DynaFlag46", 1, "FT46")
+			DYHD G 0 A_JumpIfInventory("DynaFlag47", 1, "FT47")
+			DYHD G 0 A_JumpIfInventory("DynaFlag48", 1, "FT48")
+			DYHD G 0 A_JumpIfInventory("DynaFlag49", 1, "FT49")
+			DYHD G 0 A_JumpIfInventory("DynaFlag50", 1, "FT50")
+			DYHD G 0 A_JumpIfInventory("DynaFlag51", 1, "FT51")
+			DYHD G 0 A_JumpIfInventory("DynaFlag52", 1, "FT52")
+			DYHD G 0 A_JumpIfInventory("DynaFlag53", 1, "FT53")
+			DYHD G 0 A_JumpIfInventory("DynaFlag54", 1, "FT54")
+			DYHD G 0 A_JumpIfInventory("DynaFlag55", 1, "FT55")
+			DYHD G 0 A_JumpIfInventory("DynaFlag56", 1, "FT56")
+			DYHD G 0 A_JumpIfInventory("DynaFlag57", 1, "FT57")
+			DYHD G 0 A_JumpIfInventory("DynaFlag58", 1, "FT58")
+			DYHD G 0 A_JumpIfInventory("DynaFlag59", 1, "FT59")
+			DYHD G 0 A_JumpIfInventory("DynaFlag60", 1, "FT60")
+			DYHD G 0 A_JumpIfInventory("DynaFlag61", 1, "FT61")
+			DYHD G 0 A_JumpIfInventory("DynaFlag62", 1, "FT62")
+			DYHD G 0 A_JumpIfInventory("DynaFlag63", 1, "FT63")
+			DYHD G 0 A_JumpIfInventory("DynaFlag64", 1, "FT64")
+			DYHD G 0
+		goto FireEnd
+		FT1:
+			DYHD G 0 A_GiveInventory("DynamomanBolt1_CI", 1)
+		goto FT0 + 1
+		FT2:
+			DYHD G 0 A_GiveInventory("DynamomanBolt2_CI", 1)
+		goto FT0 + 2
+		FT3:
+			DYHD G 0 A_GiveInventory("DynamomanBolt3_CI", 1)
+		goto FT0 + 3
+		FT4:
+			DYHD G 0 A_GiveInventory("DynamomanBolt4_CI", 1)
+		goto FT0 + 4
+		FT5:
+			DYHD G 0 A_GiveInventory("DynamomanBolt5_CI", 1)
+		goto FT0 + 5
+		FT6:
+			DYHD G 0 A_GiveInventory("DynamomanBolt6_CI", 1)
+		goto FT0 + 6
+		FT7:
+			DYHD G 0 A_GiveInventory("DynamomanBolt7_CI", 1)
+		goto FT0 + 7
+		FT8:
+			DYHD G 0 A_GiveInventory("DynamomanBolt8_CI", 1)
+		goto FT0 + 8
+		FT9:
+			DYHD G 0 A_GiveInventory("DynamomanBolt9_CI", 1)
+		goto FT0 + 9
+		FT10:
+			DYHD G 0 A_GiveInventory("DynamomanBolt10_CI", 1)
+		goto FT0 + 10
+		FT11:
+			DYHD G 0 A_GiveInventory("DynamomanBolt11_CI", 1)
+		goto FT0 + 11
+		FT12:
+			DYHD G 0 A_GiveInventory("DynamomanBolt12_CI", 1)
+		goto FT0 + 12
+		FT13:
+			DYHD G 0 A_GiveInventory("DynamomanBolt13_CI", 1)
+		goto FT0 + 13
+		FT14:
+			DYHD G 0 A_GiveInventory("DynamomanBolt14_CI", 1)
+		goto FT0 + 14
+		FT15:
+			DYHD G 0 A_GiveInventory("DynamomanBolt15_CI", 1)
+		goto FT0 + 15
+		FT16:
+			DYHD G 0 A_GiveInventory("DynamomanBolt16_CI", 1)
+		goto FT0 + 16
+		FT17:
+			DYHD G 0 A_GiveInventory("DynamomanBolt17_CI", 1)
+		goto FT0 + 17
+		FT18:
+			DYHD G 0 A_GiveInventory("DynamomanBolt18_CI", 1)
+		goto FT0 + 18
+		FT19:
+			DYHD G 0 A_GiveInventory("DynamomanBolt19_CI", 1)
+		goto FT0 + 19
+		FT20:
+			DYHD G 0 A_GiveInventory("DynamomanBolt20_CI", 1)
+		goto FT0 + 20
+		FT21:
+			DYHD G 0 A_GiveInventory("DynamomanBolt21_CI", 1)
+		goto FT0 + 21
+		FT22:
+			DYHD G 0 A_GiveInventory("DynamomanBolt22_CI", 1)
+		goto FT0 + 22
+		FT23:
+			DYHD G 0 A_GiveInventory("DynamomanBolt23_CI", 1)
+		goto FT0 + 23
+		FT24:
+			DYHD G 0 A_GiveInventory("DynamomanBolt24_CI", 1)
+		goto FT0 + 24
+		FT25:
+			DYHD G 0 A_GiveInventory("DynamomanBolt25_CI", 1)
+		goto FT0 + 25
+		FT26:
+			DYHD G 0 A_GiveInventory("DynamomanBolt26_CI", 1)
+		goto FT0 + 26
+		FT27:
+			DYHD G 0 A_GiveInventory("DynamomanBolt27_CI", 1)
+		goto FT0 + 27
+		FT28:
+			DYHD G 0 A_GiveInventory("DynamomanBolt28_CI", 1)
+		goto FT0 + 28
+		FT29:
+			DYHD G 0 A_GiveInventory("DynamomanBolt29_CI", 1)
+		goto FT0 + 29
+		FT30:
+			DYHD G 0 A_GiveInventory("DynamomanBolt30_CI", 1)
+		goto FT0 + 30
+		FT31:
+			DYHD G 0 A_GiveInventory("DynamomanBolt31_CI", 1)
+		goto FT0 + 31
+		FT32:
+			DYHD G 0 A_GiveInventory("DynamomanBolt32_CI", 1)
+		goto FT0 + 32
+		FT33:
+			DYHD G 0 A_GiveInventory("DynamomanBolt33_CI", 1)
+		goto FT0 + 33
+		FT34:
+			DYHD G 0 A_GiveInventory("DynamomanBolt34_CI", 1)
+		goto FT0 + 34
+		FT35:
+			DYHD G 0 A_GiveInventory("DynamomanBolt35_CI", 1)
+		goto FT0 + 35
+		FT36:
+			DYHD G 0 A_GiveInventory("DynamomanBolt36_CI", 1)
+		goto FT0 + 36
+		FT37:
+			DYHD G 0 A_GiveInventory("DynamomanBolt37_CI", 1)
+		goto FT0 + 37
+		FT38:
+			DYHD G 0 A_GiveInventory("DynamomanBolt38_CI", 1)
+		goto FT0 + 38
+		FT39:
+			DYHD G 0 A_GiveInventory("DynamomanBolt39_CI", 1)
+		goto FT0 + 39
+		FT40:
+			DYHD G 0 A_GiveInventory("DynamomanBolt40_CI", 1)
+		goto FT0 + 40
+		FT41:
+			DYHD G 0 A_GiveInventory("DynamomanBolt41_CI", 1)
+		goto FT0 + 41
+		FT42:
+			DYHD G 0 A_GiveInventory("DynamomanBolt42_CI", 1)
+		goto FT0 + 42
+		FT43:
+			DYHD G 0 A_GiveInventory("DynamomanBolt43_CI", 1)
+		goto FT0 + 43
+		FT44:
+			DYHD G 0 A_GiveInventory("DynamomanBolt44_CI", 1)
+		goto FT0 + 44
+		FT45:
+			DYHD G 0 A_GiveInventory("DynamomanBolt45_CI", 1)
+		goto FT0 + 45
+		FT46:
+			DYHD G 0 A_GiveInventory("DynamomanBolt46_CI", 1)
+		goto FT0 + 46
+		FT47:
+			DYHD G 0 A_GiveInventory("DynamomanBolt47_CI", 1)
+		goto FT0 + 47
+		FT48:
+			DYHD G 0 A_GiveInventory("DynamomanBolt48_CI", 1)
+		goto FT0 + 48
+		FT49:
+			DYHD G 0 A_GiveInventory("DynamomanBolt49_CI", 1)
+		goto FT0 + 49
+		FT50:
+			DYHD G 0 A_GiveInventory("DynamomanBolt50_CI", 1)
+		goto FT0 + 50
+		FT51:
+			DYHD G 0 A_GiveInventory("DynamomanBolt51_CI", 1)
+		goto FT0 + 51
+		FT52:
+			DYHD G 0 A_GiveInventory("DynamomanBolt52_CI", 1)
+		goto FT0 + 52
+		FT53:
+			DYHD G 0 A_GiveInventory("DynamomanBolt53_CI", 1)
+		goto FT0 + 53
+		FT54:
+			DYHD G 0 A_GiveInventory("DynamomanBolt54_CI", 1)
+		goto FT0 + 54
+		FT55:
+			DYHD G 0 A_GiveInventory("DynamomanBolt55_CI", 1)
+		goto FT0 + 55
+		FT56:
+			DYHD G 0 A_GiveInventory("DynamomanBolt56_CI", 1)
+		goto FT0 + 56
+		FT57:
+			DYHD G 0 A_GiveInventory("DynamomanBolt57_CI", 1)
+		goto FT0 + 57
+		FT58:
+			DYHD G 0 A_GiveInventory("DynamomanBolt58_CI", 1)
+		goto FT0 + 58
+		FT59:
+			DYHD G 0 A_GiveInventory("DynamomanBolt59_CI", 1)
+		goto FT0 + 59
+		FT60:
+			DYHD G 0 A_GiveInventory("DynamomanBolt60_CI", 1)
+		goto FT0 + 60
+		FT61:
+			DYHD G 0 A_GiveInventory("DynamomanBolt61_CI", 1)
+		goto FT0 + 61
+		FT62:
+			DYHD G 0 A_GiveInventory("DynamomanBolt62_CI", 1)
+		goto FT0 + 62
+		FT63:
+			DYHD G 0 A_GiveInventory("DynamomanBolt63_CI", 1)
+		goto FT0 + 63
+		FT64:
+			DYHD G 0 A_GiveInventory("DynamomanBolt64_CI", 1)
+		goto FT0 + 64
+		FireEnd:
+			DYHD G 0 A_TakeInventory("DynamoIsScanning", 99)
+			DYHD G 0 A_TakeInventory("DynamoIsAiming", 99)
+			DYHD GF 2
+			DYHD A 2 A_GiveInventory("DynaFlagRemoveItem", 1)
+			DYHD A 0 ACS_ExecuteAlways(CORE_ACS_191, 0, APROP_Speed, 1, 1)//Normal speed
+			DYHD A 4
+			DYHD AAAAAAA 2 A_GiveInventory("DynamoStaminaFlag", 31)
+			DYHD A 0 A_GiveInventory("DynamoStaminaFlag", 500)
+			DYHD A 0 A_TakeInventory("DynamoCoolDownFlag", 99)
+		goto Ready+2
+		AltFire:
+			DYHD A 0 A_JumpIfInventory("DynamoItemFlag", 1, "EndCharge")
+			DYHD A 0 A_JumpIfInventory("DynamoIsScanning", 1, "AltfireOrb")
+			DYHD A 0 A_GiveInventory("DynamoCoolDownFlag", 1)
+			DYHD A 0 A_PlaySoundEx("weapon / magnetmissile", "Weapon")
+			DYHD A 0 A_GiveInventory("DynamomanAlt2_CI", 1)
+			DYHD A 0 A_GiveInventory("DynamoElectricity", 21)
+			DYHD A 0 A_GiveInventory("DynamoARGS_PG21", 1)
+			DYHD BCD 3
+			DYHD E 6
+			DYHD A 10
+			DYHD A 0 A_TakeInventory("DynamoCoolDownFlag", 99)
+			DYHD A 0
+		Goto Ready+2
+		AltfireOrb:
+			DYHD G 0 A_TakeInventory("DynamoIsScanning", 99)
+			DYHD G 0 A_TakeInventory("DynamoIsAiming", 99)
+			DYHD G 0 ACS_ExecuteAlways(CORE_ACS_191, 0, APROP_Speed, 1, 1)//Normal speed
+			DYHD G 1 A_GiveInventory("DynaFlagRemoveItem", 1)
+			DYHD G 0
+		goto OrbFireTime
+		OrbFireTime:
+			DYHD G 0 A_PlaySoundEx("weapon / dynamoorbs", "Weapon")
+			DYHD G 0 A_GiveInventory("DynamomanAlt1_CI", 1)
+			DYHD G 0 A_GiveInventory("DynamoARGS_PT180", 1)
+			DYHD G 5 A_TakeInventory("DynamoElectricity", 180)
+			DYHD G 0 A_JumpIfInventory("DynamoElectricity", 180, "OrbFireTime")
+		goto AltfireOrbE
+		AltfireOrbE:
+			DYHD GF 2
+			DYHD A 2
+			DYHD A 4
+			DYHD AAAAAAA 2 A_GiveInventory("DynamoStaminaFlag", 31)
+			DYHD A 0 A_GiveInventory("DynamoStaminaFlag", 500)
+			DYHD A 0 A_TakeInventory("DynamoCoolDownFlag", 99)
+		goto Ready+2
+		Flash:
+			TNT1 A 0 A_PlaySoundEx("weapon / dynamocharge", "Weapon")
+			TNT1 AAAAAAAAAA 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, 2000)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsScanning", 1, 1)
+		stop
+			TNT1 AAAAAAAAAA 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, 2000)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsScanning", 1, 1)
+		stop
+			TNT1 AAAAAAAAAA 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, 2000)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsScanning", 1, 1)
+		stop
+			TNT1 AAAAAAAAAAA 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, 2000)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsScanning", 1, 1)
+		stop
+			TNT1 AAAAAAAAAAA 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, 2000)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsScanning", 1, 1)
+		stop
+			TNT1 AAAAAAAAAAA 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, 2000)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsScanning", 1, 1)
+		stop
+			TNT1 AAAAAAAAAAA 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, 2000)//74
+			TNT1 A 0 A_JumpIfInventory("IsDead", 1, "NoFlash")
+			TNT1 A 0 A_JumpIfInventory("DynamoIsAiming", 1, "FlashHold")
+			TNT1 A 0 A_JumpIfInventory("DynamoIsScanning", 1, "Flash")
+		stop
+		FlashHold:
+			TNT1 A 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, 2000)
+			TNT1 A 0 A_JumpIfInventory("IsDead", 1, "NoFlash")
+			TNT1 A 0 A_JumpIfInventory("DynamoIsAiming", 1, "FlashHold")
+		stop
+		ItemRecharge:
+			DYHD A 0 A_GiveInventory("DynamoHealingWeakness", 1)
+			DYHD A 0 A_GiveInventory("GuardDownFlag", 1)
+			DYHD A 0 A_GiveInventory("StunArmor", 1)
+			DYHD A 0 A_TakeInventory("LightHealthBar", 999)
+			DYHD A 0 A_GiveInventory("GlassHealthBar", 1)
+			DYHD A 0 A_GiveInventory("DynamoCoolDownFlag", 1)
+			DYHD A 0 ACS_ExecuteAlways(CORE_ACS_191, 0, APROP_JumpZ, 0, 1)
+			DYHD A 0 ACS_ExecuteAlways(CORE_ACS_191, 0, APROP_Speed, 0, 1)
+			DYHD A 0 A_JumpIfInventory("FlightDisableFlag", 1, 2)
+			DYHD A 0 A_Stop
+			DYHD A 0
+			DYHD A 0 A_SpawnItemEx("DynaHealSoundFX")
+			DYHD A 2 Offset(0, 42)A_GiveInventory("NOGRAVITY_FlightP", 1)
+			DYHD A 2 Offset(0, 54)A_GiveInventory("NOGRAVITY_FlightP", 1)
+			DYHD A 2 Offset(0, 66)A_GiveInventory("NOGRAVITY_FlightP", 1)
+			DYHD A 2 Offset(0, 78)A_GiveInventory("NOGRAVITY_FlightP", 1)
+			DYHD A 2 Offset(0, 90)ACS_ExecuteAlways(CORE_ACS_191, 0, APROP_Speed, 3, 8)
+			TNT1 A 1 A_GiveInventory("DynamoIsCharging", 1)
+			TNT1 A 0 A_TakeInventory("DynamoCoolDownFlag", 99)
+			TNT1 A 0 A_SpawnItemEx("DynaHealSoundFX2")
+			Recharging:
+			TNT1 A 0 A_GiveInventory("NOGRAVITY_FlightP", 1)
+			TNT1 A 2 A_WeaponReady(WRF_NOSWITCH)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsCharging", 1, 1)
+		goto EndCharge
+			TNT1 A 0 A_JumpIfInventory("PowerRage_ST", 1, 3)
+			TNT1 A 1 A_WeaponReady(WRF_NOSWITCH)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsCharging", 1, 1)
+		goto EndCharge
+			TNT1 A 0 HealThing(1)
+			TNT1 A 0 A_GiveInventory("DynamomanOther_CI", 1)
+			TNT1 A 0 A_TakeInventory("DynamoHealAmmo", 1)
+			TNT1 A 0 //A_JumpIf(Health>=100, "EndCharge")
+			TNT1 A 0 A_JumpIfInventory("DynamoIsCharging", 1, 1)
+		goto EndCharge
+			TNT1 A 0 A_JumpIfInventory("DynamoHealAmmo", 1, 1)
+		goto EndCharge
+			TNT1 A 0 A_GiveInventory("NOGRAVITY_FlightP", 1)
+			TNT1 A 2 A_WeaponReady(WRF_NOSWITCH)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsCharging", 1, 1)
+		goto EndCharge
+			TNT1 A 0 A_JumpIfInventory("PowerRage_ST", 1, 3)
+			TNT1 A 1 A_WeaponReady(WRF_NOSWITCH)
+			TNT1 A 0 A_JumpIfInventory("DynamoIsCharging", 1, 1)
+		goto EndCharge
+			TNT1 A 0 HealThing(1)
+			TNT1 A 0 A_GiveInventory("DynamomanOther_CI", 1)
+			TNT1 A 0 A_TakeInventory("DynamoHealAmmo", 1)
+			TNT1 A 0 //A_JumpIf(Health>=100, "EndCharge")
+			TNT1 A 0 A_JumpIfInventory("DynamoIsCharging", 1, 1)
+		goto EndCharge
+			TNT1 A 0 A_JumpIfInventory("DynamoHealAmmo", 1, "Recharging")
+		goto EndCharge
+		EndCharge:
+			TNT1 A 0 A_TakeInventory("StunArmor", 99)
+			TNT1 A 0 A_TakeInventory("DynamoHealingWeakness", 99)
+			TNT1 A 0 A_TakeInventory("GuardDownFlag", 99)
+			TNT1 A 0 A_TakeInventory("GlassHealthBar", 999)
+			TNT1 A 0 A_GiveInventory("LightHealthBar", 1)
+			TNT1 A 0 ACS_ExecuteAlways(CORE_ACS_191, 0, APROP_JumpZ, 10, 1)
+			TNT1 A 0 ACS_ExecuteAlways(CORE_ACS_191, 0, APROP_Speed, 1, 1)
+			TNT1 A 0 A_ChangeFlag("NOGRAVITY", 0)
+			TNT1 A 0 //A_PlayWeaponSound("weapon/junkshield")
+			TNT1 A 0 A_SpawnItemEx("DynamoExplodeChargeFX", 0, 0, 28, momx, momy, momz, 0, 9)
+			TNT1 A 0 A_TakeInventory("DynamoItemFlag", 99)
+			TNT1 A 0 A_TakeInventory("DynamoIsCharging", 99)
+			DYHD A 0 A_GiveInventory("DynamoCoolDownFlag", 1)
+			DYHD A 2 Offset(0, 90)
+			DYHD A 2 Offset(0, 78)
+			DYHD A 2 Offset(0, 66)
+			DYHD A 2 Offset(0, 54)
+			DYHD A 2 Offset(0, 42)
+			DYHD A 0 A_TakeInventory("DynamoCoolDownFlag", 99)
+		goto Ready+2
+		NoAmmo:
+			DYHD A 1
+		Goto Ready+2
+		BotFire:
+			TNT1 A 0 A_Jump(128, "AltFire")
+		goto Fire+2
+		BotFire2:
+			TNT1 A 0 A_Jump(8, 1)
+		goto Fire3a+4
+			TNT1 A 0 A_Jump(128, "FireLightning")
+		goto AltfireOrb
+	}
+}
+
+actor DynamoElectricity : Ammo {
+	Inventory.Amount 1
+	Inventory.MaxAmount 720
+	+INVENTORY.IGNORESKILL
+}
+
+actor DynamoHealAmmo : Ammo {
+	Inventory.Amount 1
+	Inventory.MaxAmount 50
+	+INVENTORY.IGNORESKILL
+}
+
+actor DynamoStaminaFlag : Inventory {
+	inventory.amount 1
+	inventory.maxamount 500
+}
+
+actor DynaFlag : Inventory {
+	inventory.amount 1
+	inventory.maxamount 4
+}
+
+actor DynaFlag1 : DynaFlag { }
+
+actor DynaFlag2 : DynaFlag { }
+
+actor DynaFlag3 : DynaFlag { }
+
+actor DynaFlag4 : DynaFlag { }
+
+actor DynaFlag5 : DynaFlag { }
+
+actor DynaFlag6 : DynaFlag { }
+
+actor DynaFlag7 : DynaFlag { }
+
+actor DynaFlag8 : DynaFlag { }
+
+actor DynaFlag9 : DynaFlag { }
+
+actor DynaFlag10 : DynaFlag { }
+
+actor DynaFlag11 : DynaFlag { }
+
+actor DynaFlag12 : DynaFlag { }
+
+actor DynaFlag13 : DynaFlag { }
+
+actor DynaFlag14 : DynaFlag { }
+
+actor DynaFlag15 : DynaFlag { }
+
+actor DynaFlag16 : DynaFlag { }
+
+actor DynaFlag17 : DynaFlag { }
+
+actor DynaFlag18 : DynaFlag { }
+
+actor DynaFlag19 : DynaFlag { }
+
+actor DynaFlag20 : DynaFlag { }
+
+actor DynaFlag21 : DynaFlag { }
+
+actor DynaFlag22 : DynaFlag { }
+
+actor DynaFlag23 : DynaFlag { }
+
+actor DynaFlag24 : DynaFlag { }
+
+actor DynaFlag25 : DynaFlag { }
+
+actor DynaFlag26 : DynaFlag { }
+
+actor DynaFlag27 : DynaFlag { }
+
+actor DynaFlag28 : DynaFlag { }
+
+actor DynaFlag29 : DynaFlag { }
+
+actor DynaFlag30 : DynaFlag { }
+
+actor DynaFlag31 : DynaFlag { }
+
+actor DynaFlag32 : DynaFlag { }
+
+actor DynaFlag33 : DynaFlag { }
+
+actor DynaFlag34 : DynaFlag { }
+
+actor DynaFlag35 : DynaFlag { }
+
+actor DynaFlag36 : DynaFlag { }
+
+actor DynaFlag37 : DynaFlag { }
+
+actor DynaFlag38 : DynaFlag { }
+
+actor DynaFlag39 : DynaFlag { }
+
+actor DynaFlag40 : DynaFlag { }
+
+actor DynaFlag41 : DynaFlag { }
+
+actor DynaFlag42 : DynaFlag { }
+
+actor DynaFlag43 : DynaFlag { }
+
+actor DynaFlag44 : DynaFlag { }
+
+actor DynaFlag45 : DynaFlag { }
+
+actor DynaFlag46 : DynaFlag { }
+
+actor DynaFlag47 : DynaFlag { }
+
+actor DynaFlag48 : DynaFlag { }
+
+actor DynaFlag49 : DynaFlag { }
+
+actor DynaFlag50 : DynaFlag { }
+
+actor DynaFlag51 : DynaFlag { }
+
+actor DynaFlag52 : DynaFlag { }
+
+actor DynaFlag53 : DynaFlag { }
+
+actor DynaFlag54 : DynaFlag { }
+
+actor DynaFlag55 : DynaFlag { }
+
+actor DynaFlag56 : DynaFlag { }
+
+actor DynaFlag57 : DynaFlag { }
+
+actor DynaFlag58 : DynaFlag { }
+
+actor DynaFlag59 : DynaFlag { }
+
+actor DynaFlag60 : DynaFlag { }
+
+actor DynaFlag61 : DynaFlag { }
+
+actor DynaFlag62 : DynaFlag { }
+
+actor DynaFlag63 : DynaFlag { }
+
+actor DynaFlag64 : DynaFlag { }
+
+actor DynamoIsScanning : OnceC { }
+
+actor DynamoIsAiming : OnceC { }
+
+actor DynamoItemFlag : OnceC { }
+
+actor DynamoCoolDownFlag : OnceC { }
+
+actor DynamoIsCharging : OnceC { }
+
+actor DynamoHealingWeakness : BasePowerWeak {
+	Powerup.Duration 0x7FFFFFFF
+	DamageFactor "Normal", 1.25
+}
+
+actor DynaTagCooldown : PowerProtection {
+	Powerup.Duration 24
+	DamageFactor "DynaTag", 0.0
+}
+
+actor DynamoARGS_PG2 : CustomInventory {
+	States {
+		Pickup:
+			TNT1 A 0 A_JumpIf(args[2]>500, "No")
+			TNT1 A 0 A_SetArg(2, args[2]+2)
+		stop
+		No:
+			TNT1 A 0
+		stop
+	}
+}
+
+actor DynamoARGS_PG3 : DynamoARGS_PG2 {
+	States {
+		Pickup:
+			TNT1 A 0 A_JumpIf(args[2]>500, "No")
+			TNT1 A 0 A_SetArg(2, args[2]+3)
+		stop
+	}
+}
+
+actor DynamoARGS_PG21 : DynamoARGS_PG2 {
+	States {
+		Pickup:
+			TNT1 A 0 A_JumpIf(args[2]>500, "No")
+			TNT1 A 0 A_SetArg(2, args[2]+21)
+		stop
+	}
+}
+
+actor DynamoARGS_PT180 : DynamoARGS_PG2 {
+	States {
+		Pickup:
+			TNT1 A 0 A_JumpIf(args[2]<=180, "Pickup0")
+			TNT1 A 0 A_SetArg(2, args[2]-180)
+		stop
+		Pickup0:
+			TNT1 A 0 A_SetArg(2, 0)
+		stop
+	}
+}
+
+actor DynamoRecharger : CustomInventory {
+	inventory.amount 1
+	inventory.maxamount 1
+	inventory.pickupmessage "Batteries not included."
+	+INVBAR
+	Scale 2.0
+	inventory.icon "DYNCSI"
+	states {
+		Spawn:
+			DYPJ [ 1
+		loop
+		Use:
+			TNT1 A 0 A_JumpIfInventory("DynamoCoolDownFlag", 1, "No")
+			TNT1 A 0 //A_JumpIfHealthLower(100, "Use1")
+			TNT1 A 0 A_JumpIfInventory("DynamoHealAmmo", 1, "Use2")
+		fail
+		Use1:
+			TNT1 A 0 A_JumpIfInventory("DynamoHealAmmo", 1, "Use2")
+		fail
+		Use2:
+			TNT1 A 0 A_PlaySoundEX("item / ItemUseMM9", "SoundSlot6")
+			TNT1 A 0 A_JumpIfInventory("DynamoIsCharging", 1, "Use4")
+			TNT1 A 0 A_JumpIfInventory("DynamoHealAmmo", 1, "Use3")
+			TNT1 A 0
+		fail
+		Use3:
+			TNT1 A 0 A_GiveInventory("DynamoItemFlag", 1)
+		fail
+		Use4:
+			TNT1 A 0 A_TakeInventory("DynamoIsCharging", 99)
+			TNT1 A 0 A_TakeInventory("DynamoItemFlag", 99)
+		fail
+		No:
+			TNT1 A 0
+		fail
+	}
+}
+
+actor DynaHealSoundFX : BasicHelper {
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1 A_PlaySound("weapon / time
+		stopper", 4, 1.0)
+		stop
+	}
+}
+
+actor DynaHealSoundFX2 : BasicHelper {
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 2 A_GiveToTarget("DynaChargeSndPickup")
+			TNT1 A 0 A_JumpIfInTargetInventory("IsDead", 1, "Death")
+			TNT1 A 1 A_JumpIfInTargetInventory("DynamoIsCharging", 1, "Spawn")
+		stop
+	}
+}
+
+actor DynaChargeSndPickup : CustomInventory {
+	States {
+		Pickup:
+			TNT1 A 1 A_PlaySound("weapon / thunderbolt", 4, 1.0)
+		stop
+	}
+}
+
+actor DynamoTaggerFX : ElecTeleFX {
+	Translation "202:202=97:97", "199:199=194:194"
+	Alpha 0.90
+	+FORCEXYBILLBOARD
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 0
+			TNT1 A 1 //A_Stop
+			TNT1 A 0 A_Jump(256, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+			ELEA K 1
+		stop
+			ELEA L 1
+		stop
+			ELEA M 1
+		stop
+			ELEA N 1
+		stop
+			ELEA O 1
+		stop
+			ELEA P 1
+		stop
+			ELEA Q 1
+		stop
+			ELEA R 1
+		stop
+			ELEA S 1
+		stop
+	}
+}
+
+actor DynamoTaggerFX-1 : DynamoTaggerFX {
+}
+
+actor DynamoTaggerFX0 : DynamoTaggerFX {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynamoTaggerFX1 : DynamoTaggerFX {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynamoTaggerFX2 : DynamoTaggerFX {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynamoTaggerFX3 : DynamoTaggerFX {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor LightningOrbTracer// : FastProjectile {
+	PROJECTILE
+	Obituary "$OB_DYNAMOSCAN"
+	+DONTSPLASH
+	+NOEXPLODEFLOOR
+	//+NOCLIP
+	+FORCEXYBILLBOARD
+	+THRUGHOST
+	+FLOORHUGGER
+	+DONTBLAST
+	+DONTREFLECT
+	//+NONETID
+	+EXPLODEONDEATH
+	ReactionTime 1
+	Damage (1)
+	damagetype "DynaTag"
+	Speed 300
+	Radius 16
+	Height 48//96
+	Scale 2.5
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1 A_CountDown
+		wait
+		Death:
+		XDeath:
+			TNT1 A 0 ACS_NamedExecuteAlways("cbm_drawdynamotrail", 0, ACS_NAmedExecuteWithResult("core_gettarget"), ACS_ExecuteWithResult(143, 0))
+			TNT1 A 0 A_SpawnItemEx("LightningOrbFX", 0, 0, 16, 0, 0, 0, 0, 1)
+			TNT1 A 3
+		stop
+	}
+}
+
+actor LightningOrbTracerB : LightningOrbTracer { }
+
+actor LightningOrbTracerR : LightningOrbTracer { }
+
+actor LightningOrbTracerO : LightningOrbTracer { }
+
+actor LightningOrbTracerP : LightningOrbTracer { }
+
+actor LightningOrbTracer2 : LightningOrbTracer {
+	Speed 150
+}
+
+actor LightningOrbTracer2B : LightningOrbTracerB {
+	Speed 150
+}
+
+actor LightningOrbTracer2R : LightningOrbTracerR {
+	Speed 150
+}
+
+actor LightningOrbTracer2O : LightningOrbTracerO {
+	Speed 150
+}
+
+actor LightningOrbTracer2P : LightningOrbTracerP {
+	Speed 150
+}
+
+actor LightningOrb {
+	translation "202:202=96:96", "199:199=240:240"
+	PROJECTILE
+	DamageType "DynaTag"
+	Obituary "$OB_DYNAMOSCAN"
+	+NOEXPLODEFLOOR
+	//+FLOORHUGGER
+	+PIERCEARMOR
+	+THRUGHOST
+	+DONTBLAST
+	+DONTREFLECT
+	//+NONETID
+	Damage (1)
+	radius 32
+	height 32
+	states {
+		Spawn:
+			TNT1 A 3
+		stop
+		Death:
+			TNT1 A 2
+		stop
+	}
+}
+
+actor LightningOrbB : LightningOrb {
+	translation "202:202=205:205", "199:199=74:74"
+}
+
+actor LightningOrbR : LightningOrb {
+	translation "202:202=171:171", "199:199=41:41"
+}
+
+actor LightningOrbO : LightningOrb {
+	translation "202:202=104:104", "199:199=128:128"
+}
+
+actor LightningOrbP : LightningOrb {
+	translation "202:202=229:229", "199:199=232:232"
+}
+
+actor LightningOrbFX : BasicClientSide {
+	+FORCEYBILLBOARD
+	+FORCEXYBILLBOARD
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1
+			TNT1 A 0 A_Jump(256, 1, 2, 3, 4, 5, 6, 7, 8)
+			DYPJ D 1
+		stop
+			DYPJ E 1
+		stop
+			DYPJ F 1
+		stop
+			DYPJ G 1
+		stop
+			DYPJ H 1
+		stop
+			DYPJ I 1
+		stop
+			DYPJ J 1
+		stop
+			DYPJ K 1
+		stop
+	}
+}
+
+actor DynaFlagRemoveItem : CustomInventory {
+	States {
+		Pickup:
+			TNT1 A 0 A_TakeInventory("DynaFlag1", 9)TNT1 A 0 A_TakeInventory("DynaFlag2", 9)TNT1 A 0 A_TakeInventory("DynaFlag3", 9)TNT1 A 0 A_TakeInventory("DynaFlag4", 9)TNT1 A 0 A_TakeInventory("DynaFlag5", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag6", 9)TNT1 A 0 A_TakeInventory("DynaFlag7", 9)TNT1 A 0 A_TakeInventory("DynaFlag8", 9)TNT1 A 0 A_TakeInventory("DynaFlag9", 9)TNT1 A 0 A_TakeInventory("DynaFlag10", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag11", 9)TNT1 A 0 A_TakeInventory("DynaFlag12", 9)TNT1 A 0 A_TakeInventory("DynaFlag13", 9)TNT1 A 0 A_TakeInventory("DynaFlag14", 9)TNT1 A 0 A_TakeInventory("DynaFlag15", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag16", 9)TNT1 A 0 A_TakeInventory("DynaFlag17", 9)TNT1 A 0 A_TakeInventory("DynaFlag18", 9)TNT1 A 0 A_TakeInventory("DynaFlag19", 9)TNT1 A 0 A_TakeInventory("DynaFlag20", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag21", 9)TNT1 A 0 A_TakeInventory("DynaFlag22", 9)TNT1 A 0 A_TakeInventory("DynaFlag23", 9)TNT1 A 0 A_TakeInventory("DynaFlag24", 9)TNT1 A 0 A_TakeInventory("DynaFlag25", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag26", 9)TNT1 A 0 A_TakeInventory("DynaFlag27", 9)TNT1 A 0 A_TakeInventory("DynaFlag28", 9)TNT1 A 0 A_TakeInventory("DynaFlag29", 9)TNT1 A 0 A_TakeInventory("DynaFlag30", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag31", 9)TNT1 A 0 A_TakeInventory("DynaFlag32", 9)TNT1 A 0 A_TakeInventory("DynaFlag33", 9)TNT1 A 0 A_TakeInventory("DynaFlag34", 9)TNT1 A 0 A_TakeInventory("DynaFlag35", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag36", 9)TNT1 A 0 A_TakeInventory("DynaFlag37", 9)TNT1 A 0 A_TakeInventory("DynaFlag38", 9)TNT1 A 0 A_TakeInventory("DynaFlag39", 9)TNT1 A 0 A_TakeInventory("DynaFlag40", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag41", 9)TNT1 A 0 A_TakeInventory("DynaFlag42", 9)TNT1 A 0 A_TakeInventory("DynaFlag43", 9)TNT1 A 0 A_TakeInventory("DynaFlag44", 9)TNT1 A 0 A_TakeInventory("DynaFlag45", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag46", 9)TNT1 A 0 A_TakeInventory("DynaFlag47", 9)TNT1 A 0 A_TakeInventory("DynaFlag48", 9)TNT1 A 0 A_TakeInventory("DynaFlag49", 9)TNT1 A 0 A_TakeInventory("DynaFlag50", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag51", 9)TNT1 A 0 A_TakeInventory("DynaFlag52", 9)TNT1 A 0 A_TakeInventory("DynaFlag53", 9)TNT1 A 0 A_TakeInventory("DynaFlag54", 9)TNT1 A 0 A_TakeInventory("DynaFlag55", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag56", 9)TNT1 A 0 A_TakeInventory("DynaFlag57", 9)TNT1 A 0 A_TakeInventory("DynaFlag58", 9)TNT1 A 0 A_TakeInventory("DynaFlag59", 9)TNT1 A 0 A_TakeInventory("DynaFlag60", 9)
+			TNT1 A 0 A_TakeInventory("DynaFlag61", 9)TNT1 A 0 A_TakeInventory("DynaFlag62", 9)TNT1 A 0 A_TakeInventory("DynaFlag63", 9)TNT1 A 0 A_TakeInventory("DynaFlag64", 9)
+		stop
+	}
+}
+
+actor DynaLBoltX {
+	translation "202:202=96:96", "199:199=240:240"
+	var int user_TID;
+	var int user_I;
+	PROJECTILE
+	+DONTSPLASH
+	+NOEXPLODEFLOOR
+	+FLOORHUGGER//NOCLIP
+	+DONTBLAST
+	+DONTREFLECT
+	+THRUGHOST
+	+THRUACTORS///////
+	ReactionTime 1
+	Damage (0)
+	Speed 1
+	Radius 16
+	Height 56
+	Scale 2.5
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 0 A_SetUserVar("user_I", 2)
+			TNT1 A 0 A_Jump(256, "SpawnX")
+			SpawnX:
+			TNT1 A 0
+			SpawnA:
+			TNT1 A 0 A_SetUserVar("user_I", user_I+1)
+			TNT1 A 0 A_GiveInventory("WeaponCharge", 1)
+			TNT1 A 0
+			TNT1 A 0 A_Jump(256, "SpawnX")
+			Spawn2:
+			TNT1 A 0
+			TNT1 A 0
+			TNT1 AAAA 1 ACS_ExecuteAlways(C_DYNAMOACS, 0, user_TID+999)
+			TNT1 A 1 A_CountDown
+		wait
+		Death:
+		Crash:
+		XDeath:
+			TNT1 A 0
+			TNT1 A 0
+			TNT1 A 0 A_JumpIfInventory("WeaponCharge", 3, "Death4")
+			TNT1 A 0 A_JumpIfInventory("WeaponCharge", 2, "Death3")
+			TNT1 A 0 A_JumpIfInventory("WeaponCharge", 1, "Death2")
+			TNT1 A 0 A_SpawnItemEx("DLightningBolt1", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+		NoDeath:
+			TNT1 A 0
+		stop
+		Death1:
+			TNT1 A 0 A_SpawnItemEx("DLightningBolt1", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+		Death2:
+			TNT1 A 0 A_SpawnItemEx("DLightningBolt2", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+		Death3:
+			TNT1 A 0 A_SpawnItemEx("DLightningBolt3", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+		Death4:
+			TNT1 A 0 A_SpawnItemEx("DLightningBolt4", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DynaLBolt1 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag1", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt2 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag2", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt3 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag3", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt4 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag4", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt5 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag5", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt6 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag6", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt7 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag7", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt8 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag8", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt9 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag9", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt10 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag10", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt11 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag11", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt12 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag12", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt13 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag13", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt14 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag14", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt15 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag15", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt16 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag16", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt17 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag17", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt18 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag18", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt19 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag19", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt20 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaLBolt20", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt21 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag21", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt22 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag22", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt23 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag23", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt24 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag24", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt25 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag25", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt26 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag26", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt27 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag27", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt28 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag28", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt29 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag29", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt30 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag30", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt31 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag31", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt32 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag32", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt33 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag33", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt34 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag34", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt35 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag35", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt36 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag36", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt37 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag37", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt38 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag38", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt39 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag39", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt40 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag40", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt41 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag41", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt42 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag42", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt43 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag43", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt44 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag44", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt45 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag45", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt46 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag46", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt47 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag47", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt48 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag48", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt49 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag49", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt50 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag50", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt51 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag51", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt52 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag52", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt53 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag53", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt54 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag54", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt55 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag55", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt56 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag56", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt57 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag57", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt58 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag58", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt59 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag59", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt60 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag60", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt61 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag61", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt62 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag62", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt63 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag63", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt64 : DynaLBoltX {
+	States {
+		SpawnX:
+			TNT1 A 0 A_JumpIfInTargetInventory("DynaFlag64", user_I, "SpawnA")
+		goto Spawn2
+	}
+}
+
+actor DynaLBolt1B : DynaLBolt1 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt1R : DynaLBolt1 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt1O : DynaLBolt1 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt1P : DynaLBolt1 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt2B : DynaLBolt2 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt2R : DynaLBolt2 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt2O : DynaLBolt2 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt2P : DynaLBolt2 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt3B : DynaLBolt3 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt3R : DynaLBolt3 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt3O : DynaLBolt3 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt3P : DynaLBolt3 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt4B : DynaLBolt4 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt4R : DynaLBolt4 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt4O : DynaLBolt4 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt4P : DynaLBolt4 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt5B : DynaLBolt5 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt5R : DynaLBolt5 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt5O : DynaLBolt5 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt5P : DynaLBolt5 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt6B : DynaLBolt6 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt6R : DynaLBolt6 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt6O : DynaLBolt6 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt6P : DynaLBolt6 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt7B : DynaLBolt7 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt7R : DynaLBolt7 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt7O : DynaLBolt7 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt7P : DynaLBolt7 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt8B : DynaLBolt8 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt8R : DynaLBolt8 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt8O : DynaLBolt8 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt8P : DynaLBolt8 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt9B : DynaLBolt9 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt9R : DynaLBolt9 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt9O : DynaLBolt9 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt9P : DynaLBolt9 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt10B : DynaLBolt10 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt10R : DynaLBolt10 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt10O : DynaLBolt10 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt10P : DynaLBolt10 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt11B : DynaLBolt11 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt11R : DynaLBolt11 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt11O : DynaLBolt11 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt11P : DynaLBolt11 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt12B : DynaLBolt12 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt12R : DynaLBolt12 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt12O : DynaLBolt12 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt12P : DynaLBolt12 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt13B : DynaLBolt13 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt13R : DynaLBolt13 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt13O : DynaLBolt13 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt13P : DynaLBolt13 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt14B : DynaLBolt14 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt14R : DynaLBolt14 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt14O : DynaLBolt14 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt14P : DynaLBolt14 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt15B : DynaLBolt15 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt15R : DynaLBolt15 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt15O : DynaLBolt15 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt15P : DynaLBolt15 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt16B : DynaLBolt16 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt16R : DynaLBolt16 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt16O : DynaLBolt16 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt16P : DynaLBolt16 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt17B : DynaLBolt17 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt17R : DynaLBolt17 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt17O : DynaLBolt17 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt17P : DynaLBolt17 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt18B : DynaLBolt18 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt18R : DynaLBolt18 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt18O : DynaLBolt18 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt18P : DynaLBolt18 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt19B : DynaLBolt19 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt19R : DynaLBolt19 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt19O : DynaLBolt19 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt19P : DynaLBolt19 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt20B : DynaLBolt20 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt20R : DynaLBolt20 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt20O : DynaLBolt20 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt20P : DynaLBolt20 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt21B : DynaLBolt21 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt21R : DynaLBolt21 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt21O : DynaLBolt21 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt21P : DynaLBolt21 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt22B : DynaLBolt22 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt22R : DynaLBolt22 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt22O : DynaLBolt22 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt22P : DynaLBolt22 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt23B : DynaLBolt23 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt23R : DynaLBolt23 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt23O : DynaLBolt23 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt23P : DynaLBolt23 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt24B : DynaLBolt24 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt24R : DynaLBolt24 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt24O : DynaLBolt24 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt24P : DynaLBolt24 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt25B : DynaLBolt25 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt25R : DynaLBolt25 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt25O : DynaLBolt25 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt25P : DynaLBolt25 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt26B : DynaLBolt26 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt26R : DynaLBolt26 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt26O : DynaLBolt26 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt26P : DynaLBolt26 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt27B : DynaLBolt27 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt27R : DynaLBolt27 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt27O : DynaLBolt27 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt27P : DynaLBolt27 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt28B : DynaLBolt28 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt28R : DynaLBolt28 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt28O : DynaLBolt28 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt28P : DynaLBolt28 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt29B : DynaLBolt29 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt29R : DynaLBolt29 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt29O : DynaLBolt29 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt29P : DynaLBolt29 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt30B : DynaLBolt30 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt30R : DynaLBolt30 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt30O : DynaLBolt30 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt30P : DynaLBolt30 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt31B : DynaLBolt31 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt31R : DynaLBolt31 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt31O : DynaLBolt31 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt31P : DynaLBolt31 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt32B : DynaLBolt32 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt32R : DynaLBolt32 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt32O : DynaLBolt32 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt32P : DynaLBolt32 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt33B : DynaLBolt33 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt33R : DynaLBolt33 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt33O : DynaLBolt33 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt33P : DynaLBolt33 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt34B : DynaLBolt34 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt34R : DynaLBolt34 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt34O : DynaLBolt34 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt34P : DynaLBolt34 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt35B : DynaLBolt35 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt35R : DynaLBolt35 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt35O : DynaLBolt35 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt35P : DynaLBolt35 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt36B : DynaLBolt36 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt36R : DynaLBolt36 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt36O : DynaLBolt36 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt36P : DynaLBolt36 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt37B : DynaLBolt37 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt37R : DynaLBolt37 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt37O : DynaLBolt37 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt37P : DynaLBolt37 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt38B : DynaLBolt38 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt38R : DynaLBolt38 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt38O : DynaLBolt38 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt38P : DynaLBolt38 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt39B : DynaLBolt39 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt39R : DynaLBolt39 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt39O : DynaLBolt39 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt39P : DynaLBolt39 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt40B : DynaLBolt40 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt40R : DynaLBolt40 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt40O : DynaLBolt40 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt40P : DynaLBolt40 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt41B : DynaLBolt41 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt41R : DynaLBolt41 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt41O : DynaLBolt41 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt41P : DynaLBolt41 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt42B : DynaLBolt42 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt42R : DynaLBolt42 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt42O : DynaLBolt42 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt42P : DynaLBolt42 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt43B : DynaLBolt43 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt43R : DynaLBolt43 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt43O : DynaLBolt43 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt43P : DynaLBolt43 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt44B : DynaLBolt44 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt44R : DynaLBolt44 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt44O : DynaLBolt44 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt44P : DynaLBolt44 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt45B : DynaLBolt45 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt45R : DynaLBolt45 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt45O : DynaLBolt45 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt45P : DynaLBolt45 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt46B : DynaLBolt46 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt46R : DynaLBolt46 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt46O : DynaLBolt46 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt46P : DynaLBolt46 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt47B : DynaLBolt47 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt47R : DynaLBolt47 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt47O : DynaLBolt47 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt47P : DynaLBolt47 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt48B : DynaLBolt48 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt48R : DynaLBolt48 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt48O : DynaLBolt48 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt48P : DynaLBolt48 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt49B : DynaLBolt49 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt49R : DynaLBolt49 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt49O : DynaLBolt49 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt49P : DynaLBolt49 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt50B : DynaLBolt50 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt50R : DynaLBolt50 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt50O : DynaLBolt50 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt50P : DynaLBolt50 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt51B : DynaLBolt51 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt51R : DynaLBolt51 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt51O : DynaLBolt51 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt51P : DynaLBolt51 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt52B : DynaLBolt52 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt52R : DynaLBolt52 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt52O : DynaLBolt52 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt52P : DynaLBolt52 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt53B : DynaLBolt53 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt53R : DynaLBolt53 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt53O : DynaLBolt53 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt53P : DynaLBolt53 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt54B : DynaLBolt54 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt54R : DynaLBolt54 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt54O : DynaLBolt54 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt54P : DynaLBolt54 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt55B : DynaLBolt55 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt55R : DynaLBolt55 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt55O : DynaLBolt55 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt55P : DynaLBolt55 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt56B : DynaLBolt56 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt56R : DynaLBolt56 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt56O : DynaLBolt56 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt56P : DynaLBolt56 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt57B : DynaLBolt57 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt57R : DynaLBolt57 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt57O : DynaLBolt57 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt57P : DynaLBolt57 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt58B : DynaLBolt58 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt58R : DynaLBolt58 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt58O : DynaLBolt58 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt58P : DynaLBolt58 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt59B : DynaLBolt59 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt59R : DynaLBolt59 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt59O : DynaLBolt59 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt59P : DynaLBolt59 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt60B : DynaLBolt60 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt60R : DynaLBolt60 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt60O : DynaLBolt60 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt60P : DynaLBolt60 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt61B : DynaLBolt61 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt61R : DynaLBolt61 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt61O : DynaLBolt61 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt61P : DynaLBolt61 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt62B : DynaLBolt62 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt62R : DynaLBolt62 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt62O : DynaLBolt62 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt62P : DynaLBolt62 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt63B : DynaLBolt63 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt63R : DynaLBolt63 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt63O : DynaLBolt63 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt63P : DynaLBolt63 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynaLBolt64B : DynaLBolt64 {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynaLBolt64R : DynaLBolt64 {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynaLBolt64O : DynaLBolt64 {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynaLBolt64P : DynaLBolt64 {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynamoHomingOrb {
+	translation "202:202=96:96", "199:199=240:240"
+	PROJECTILE
+	damagetype "LightningBolt"
+	Obituary "$OB_LIGHTNINGORB"
+	+DONTSEEKINVISIBLE
+	+SEEKERMISSILE
+	reactiontime 11
+	+FORCEXYBILLBOARD
+	damage (12)
+	Radius 8
+	Height 8
+	speed 24
+	scale 2.5
+	States {
+		Spawn:
+			DYPJ DEFGHIJK 2 A_SeekerMissile(1, 7, 3, 50, 5)
+			DYPJ A 0 A_CountDown
+		loop
+		Death:
+			DYPJ LMNOPQ 2 A_FadeOut(0.15)
+		stop
+	}
+}
+
+actor DynamoHomingOrbB : DynamoHomingOrb {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynamoHomingOrbR : DynamoHomingOrb {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynamoHomingOrbO : DynamoHomingOrb {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynamoHomingOrbP : DynamoHomingOrb {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DynamoBallFXX {
+	PROJECTILE
+	damagetype "LightningBolt"
+	Obituary "%o learned that %k's balls are inert."
+	+DONTREFLECT
+	reactiontime 1
+	damage (11)
+	Radius 8
+	Height 8
+	speed 0
+	scale 2.5
+	States {
+		Spawn:
+			DYPJ DEFGHIJK 3
+			DYPJ A 0 A_CountDown
+		loop
+		Death:
+			DYPJ DEFGHIJK 3 A_FadeOut(0.2)
+		stop
+	}
+}
+
+actor DynamoExplodeChargeFX : BasicExplosion {
+	Scale 3.5
+	States {
+		Spawn:
+			TN_B EFGHIJKLMNOPQRS 1
+		stop
+	}
+}
+
+actor DynamoOrbThrow : FastProjectile {
+	PROJECTILE
+	damagetype "LightningBolt"
+	+RIPPER
+	reactiontime 20
+	renderstyle translucent
+	alpha 0.8
+	damage (0)
+	Radius 8
+	Height 8
+	speed 96
+	scale 1.5
+	States {
+		Spawn:
+			DYPJ DEFGHIJK 3
+			DYPJ D 0 A_CountDown
+		loop
+		Death:
+			TNT1 A 1 A_SpawnItemEx("DynamoSuperSpawner", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DynamoSuperSpawner : BasicHelper {
+	translation "202:202=96:96", "199:199=240:240"
+	var int user_A1;
+	var int user_A2;
+	States {
+		Spawn:
+			TNT1 A 0 A_SetUserVar("user_A1", 0)
+			TNT1 A 0 A_SetUserVar("user_A2", 345)
+		goto SpawnFire
+		SpawnFire:
+			TNT1 A 1 A_SpawnItemEx("DLightningBoltTracer", cos(-pitch) * 4, 8, 28 + (sin(-pitch) * 4), cos(-pitch) * 60, 0, sin(-pitch) * 60, user_A1, 33, 0)
+			TNT1 A 0 A_SpawnItemEx("DLightningBoltTracer2", cos(-pitch) * 4, 8, 28 + (sin(-pitch) * 4), cos(-pitch) * 60, 0, sin(-pitch) * 60, user_A2, 33, 0)
+			TNT1 A 0 A_JumpIfInTargetInventory("PowerSpread_ST", 1, "SpawnFire_S")
+			TNT1 A 0 A_TakeFromTarget("DynamoElectricity", 60)
+		goto SpawnCount
+		SpawnFire_S:
+			TNT1 A 0 A_TakeFromTarget("DynamoElectricity", 20)
+		goto SpawnCount
+		SpawnCount:
+			TNT1 A 0 A_SetUserVar("user_A1", user_A1 + 30)
+			TNT1 A 0 A_SetUserVar("user_A2", user_A2 - 30)
+			TNT1 A 0 A_JumpIf(user_A1>=720, "TheEnd")
+			TNT1 A 0 A_JumpIfInTargetInventory("DynamoElectricity", 1, "SpawnFire")
+			TNT1 A 0
+			TNT1 A 0
+		goto TheEnd
+		TheEnd:
+			TNT1 A 0
+		stop
+	}
+}
+
+actor DynamoSuperSpawnerB : DynamoSuperSpawner {
+	translation"202:202=205:205", "199:199=74:74"
+}
+
+actor DynamoSuperSpawnerR : DynamoSuperSpawner {
+	translation"202:202=171:171", "199:199=41:41"
+}
+
+actor DynamoSuperSpawnerO : DynamoSuperSpawner {
+	translation"202:202=104:104", "199:199=128:128"
+}
+
+actor DynamoSuperSpawnerP : DynamoSuperSpawner {
+	translation"202:202=229:229", "199:199=232:232"
+}
+
+actor DLightningStartFX1 : BasicClientSide {
+	States {
+		Spawn:
+			Y_BC BCD 3
+		stop
+	}
+}
+
+actor DLightningStartFX2 : DLightningStartFX1 {
+	States {
+		Spawn:
+			Y_BC EFGHIJ 3
+		stop
+	}
+}
+
+actor DLightningBoltFX : DLightningStartFX1 {
+	States {
+		Spawn:
+			Y_BC K 0
+			Y_BC K 0 A_ChangeVelocity(Random(-2, 2), Random(-2, 2), Random(-2, 2), CVF_REPLACE)
+			Y_BC KLM 1
+		stop
+	}
+}
+
+actor DLightningBoltTracer : LightningBoltTracer {
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 0 A_ChangeFlag("FLOORHUGGER", 1)
+			TNT1 A 0 A_Changeflag("NOCLIP", 0)
+			TNT1 A 8//10
+		Goto XDeath
+		Crash:
+		XDeath:
+			TNT1 A 0
+			TNT1 A 0 A_SpawnItemEx("DLightningBolt", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DLightningBoltTracer2 : DLightningBoltTracer {
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 0 A_ChangeFlag("FLOORHUGGER", 1)
+			TNT1 A 0 A_Changeflag("NOCLIP", 0)
+			TNT1 A 4//5
+		Goto XDeath
+	}
+}
+
+actor DLightningBolt : LightningBolt {
+	ReactionTime 1
+	states {
+		Spawn:
+			Y_BC N 0
+			Y_BC N 1 A_SpawnItemEx("DLightningExtend", 0, 0, 355, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_PlaySoundEx("weapon / lightningbolt", "Weapon")
+			Y_BC N 0 A_Jump(256, "Spawn2")
+			Spawn2:
+			Y_BC N 0 A_Explode(10, 128, 0, 0, 8)
+		goto Spawn3
+		Spawn2a:
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTFX2", 0, 0, 8, 0, 0, 0, 0, 1)
+		goto Spawn3
+		Spawn3:
+			Y_BC O 1
+			Y_BC P 0 A_SpawnItemEx("DLightningBoltFX", Random(32, 96), Random(32, 96), 32, 0, 0, 0, 0, 1)
+			Y_BC P 0 A_SpawnItemEx("DLightningBoltFX", Random(-32, -96), Random(-32, -96), 64, 0, 0, 0, 0, 1)
+			Y_BC P 0 A_SpawnItemEx("DLightningBoltFX", Random(32, 96), Random(32, 96), 96, 0, 0, 0, 0, 1)
+			Y_BC P 0 A_SpawnItemEx("DLightningBoltFX", Random(-32, -96), Random(-32, -96), 128, 0, 0, 0, 0, 1)
+			Y_BC P 0 A_SpawnItemEx("DLightningBoltFX", Random(32, 96), Random(32, 96), 160, 0, 0, 0, 0, 1)
+			Y_BC P 0 A_SpawnItemEx("DLightningBoltFX", Random(-32, -96), Random(-32, -96), 192, 0, 0, 0, 0, 1)
+			Y_BC PQR 1
+			Y_BC O 0 A_CountDown
+			Y_BC N 1 A_SpawnItemEx("DLightningExtend", 0, 0, 355, 0, 0, 0, 0, 1)
+		goto Spawn+3
+	}
+}
+
+actor DLightningBolt1 : DLightningBolt {
+	Obituary "$OB_LIGHTNINGBOLTB"
+	+OLDRADIUSDMG
+	+DONTREFLECT
+	ReactionTime 1
+	states {
+		Spawn2:
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 0, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_Explode(15, 128, 0, 0, 64)
+		goto Spawn2a
+	}
+}
+
+actor DLightningBolt2 : DLightningBolt1 {
+	states {
+		Spawn2:
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 0, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 40, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_Explode(30, 136, 0, 0, 68)
+		goto Spawn2a
+	}
+}
+
+actor DLightningBolt3 : DLightningBolt1 {
+	states {
+		Spawn2:
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 0, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 40, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 80, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_Explode(45, 144, 0, 0, 72)
+		goto Spawn2a
+	}
+}
+
+actor DLightningBolt4 : DLightningBolt1 {
+	states {
+		Spawn2:
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 0, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 40, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 80, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_SpawnItemEx("DLightningBoltTHelper", 0, 0, 120, 0, 0, 0, 0, 1)
+			Y_BC N 0 A_Explode(60, 152, 0, 0, 76)
+		goto Spawn2a
+	}
+}
+
+Actor DLightningExtend : LightningExtend {
+	States {
+		Spawn:
+			Y_BC S 0
+			Y_BC S 0 A_JumpIf(ceilingz-z <= 32, "Death")
+			Y_BC S 0 A_SpawnItemEx("DLightningExtend", 0, 0, 160, 0, 0, 0, 0, 1)
+			Y_BC SSTUV 1
+		stop
+	}
+}
+
+actor DLightningBoltTFX : BasicClientSide {
+	Scale 2.0
+	States {
+		Spawn:
+			Y_BC K 0
+			Y_BC KKLLMM 1 A_ScaleVelocity(frandom(1.025, 1.100))
+		stop
+	}
+}
+
+actor DLightningBoltTFX2 : BasicClientSide {
+	States {
+		Spawn:
+			Y_BC DEFGHIJ 2
+		stop
+	}
+}
+
+actor DLightningBoltTHelper : BasicClientSide {
+	var int user_A;
+	reactiontime 18
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 0 A_SetUserVar("user_A", random(0, 20))
+			TNT1 A 0 A_SpawnItemEx("DLightningBoltTFX", random(20, 40), 0, random(-6, 6), random(8, 12), 0, random(-4, 4), user_A+random(-5, 5), 37)
+			TNT1 A 0 A_SetUserVar("user_A", user_A+20)
+			TNT1 A 0 A_Countdown
+		goto Spawn+2
+		Death:
+			TNT1 A 0
+		stop
+	}
+}
+
+	//192 : 192=217 : 217, 198 : 198=110 : 110, 199 : 199=240 : 240, 202 : 202=96 : 96
+
+actor DynamoDish {
+	translation "192:192=217:217", "198:198=4:4", "202:202=96:96", "199:199=240:240"
+	PROJECTILE
+	damagetype "DynamoTendril"
+	Obituary "$OB_DYNAMODISH"
+	Radius 14//12
+	Height 10//8
+	scale 2.5
+	damage (10)
+	speed 24
+	States {
+		Spawn:
+			DYPJ AB 6
+			Flying:
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecTH" , 0, 0, 0, momx / 2 + 33 * -sin(angle)    , momy / 2 + 33 * cos(angle)    , momz / 2, -90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXC", 0, 0, 0, momx / 2 + 33 * -sin(angle)    , momy / 2 + 33 * cos(angle)    , momz / 2, -90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXB", 0, 0, 0, momx / 2 + 33 * -sin(angle) * 2 / 3, momy / 2 + 33 * cos(angle) * 2 / 3, momz / 2, -90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXA", 0, 0, 0, momx / 2 + 33 * -sin(angle) / 3  , momy / 2 + 33 * cos(angle) / 3  , momz / 2, -90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecTH" , 0, 0, 0, momx / 2 - 33 * -sin(angle)    , momy / 2-33 * cos(angle)    , momz / 2, 90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXC", 0, 0, 0, momx / 2 - 33 * -sin(angle)    , momy / 2-33 * cos(angle)    , momz / 2, 90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXB", 0, 0, 0, momx / 2 - 33 * -sin(angle) * 2 / 3, momy / 2-33 * cos(angle) * 2 / 3, momz / 2, 90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXA", 0, 0, 0, momx / 2 - 33 * -sin(angle) / 3  , momy / 2-33 * cos(angle) / 3  , momz / 2, 90, 9)
+			DYPJ C 1
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecTH" , 0, 0, 0, momx / 2 + 33 * -sin(angle)    , momy / 2 + 33 * cos(angle)    , momz / 2, -90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXF", 0, 0, 0, momx / 2 + 33 * -sin(angle)    , momy / 2 + 33 * cos(angle)    , momz / 2, -90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXE", 0, 0, 0, momx / 2 + 33 * -sin(angle) * 2 / 3, momy / 2 + 33 * cos(angle) * 2 / 3, momz / 2, -90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXD", 0, 0, 0, momx / 2 + 33 * -sin(angle) / 3  , momy / 2 + 33 * cos(angle) / 3  , momz / 2, -90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecTH" , 0, 0, 0, momx / 2 - 33 * -sin(angle)    , momy / 2-33 * cos(angle)    , momz / 2, 90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXF", 0, 0, 0, momx / 2 - 33 * -sin(angle)    , momy / 2-33 * cos(angle)    , momz / 2, 90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXD", 0, 0, 0, momx / 2 - 33 * -sin(angle) * 2 / 3, momy / 2-33 * cos(angle) * 2 / 3, momz / 2, 90, 9)
+			DYPJ C 0 A_SpawnItemEx("DynamoDishElecFXE", 0, 0, 0, momx / 2 - 33 * -sin(angle) / 3  , momy / 2-33 * cos(angle) / 3  , momz / 2, 90, 9)
+			DYPJ C 1
+		loop
+		Crash:
+			TNT1 A 1
+		stop
+		Death:
+			TMFX ABCD 3
+		stop
+	}
+}
+
+actor DynamoDishB : DynamoDish {
+	translation"192:192=205:205", "198:198=74:74", "202:202=205:205", "199:199=74:74"
+}
+
+actor DynamoDishR : DynamoDish {
+	translation"192:192=171:171", "198:198=41:41", "202:202=171:171", "199:199=41:41"
+}
+
+actor DynamoDishO : DynamoDish {
+	translation"192:192=104:104", "198:198=128:128", "202:202=104:104", "199:199=128:128"
+}
+
+actor DynamoDishP : DynamoDish {
+	translation"192:192=229:229", "198:198=232:232", "202:202=229:229", "199:199=232:232"
+}
+
+actor DynamoDishElec {
+	PROJECTILE
+	+DONTBLAST
+	//+RIPPER
+	damagetype "LightningBolt"
+	Obituary "$OB_DYNAMODISH"
+	Radius 6
+	Height 6
+	scale 1.5
+	damage (9)
+	speed 24
+	States {
+		Spawn:
+			//TNT1 A 2
+			DYPJ RSTUVW 1
+		stop
+	}
+}
+
+actor DynamoDishElecTH : DynamoDishElec {
+	Radius 6
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1
+		stop
+	}
+}
+
+actor DynamoDishElecFX : DynamoDishElecTH {
+	+NONETID
+	+CLIENTSIDEONLY
+	+THRUACTORS
+	damage 0
+}
+
+actor DynamoDishElecFXA : DynamoDishElecFX {
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1
+			TNT1 A 0 A_SpawnItemEx("DynamoDishElecFXA2", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DynamoDishElecFXA2 : DynamoDishElecFX {
+	states {
+		Spawn:
+			DYPJ R 0
+			DYPJ R 1
+		stop
+	}
+}
+
+actor DynamoDishElecFXB : DynamoDishElecFX {
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1
+			TNT1 A 0 A_SpawnItemEx("DynamoDishElecFXB2", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DynamoDishElecFXB2 : DynamoDishElecFX {
+	states {
+		Spawn:
+			DYPJ S 0
+			DYPJ S 1
+		stop
+	}
+}
+
+actor DynamoDishElecFXC : DynamoDishElecFX {
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1
+			TNT1 A 0 A_SpawnItemEx("DynamoDishElecFXC2", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DynamoDishElecFXC2 : DynamoDishElecFX {
+	states {
+		Spawn:
+			DYPJ T 0
+			DYPJ T 1
+		stop
+	}
+}
+
+actor DynamoDishElecFXD : DynamoDishElecFX {
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1
+			TNT1 A 0 A_SpawnItemEx("DynamoDishElecFXD2", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DynamoDishElecFXD2 : DynamoDishElecFX {
+	states {
+		Spawn:
+			DYPJ U 0
+			DYPJ U 1
+		stop
+	}
+}
+
+actor DynamoDishElecFXE : DynamoDishElecFX {
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1
+			TNT1 A 0 A_SpawnItemEx("DynamoDishElecFXE2", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DynamoDishElecFXE2 : DynamoDishElecFX {
+	states {
+		Spawn:
+			DYPJ V 0
+			DYPJ V 1
+		stop
+	}
+}
+
+actor DynamoDishElecFXF : DynamoDishElecFX {
+	states {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 1
+			TNT1 A 0 A_SpawnItemEx("DynamoDishElecFXF2", 0, 0, 0, 0, 0, 0, 0, 1)
+		stop
+	}
+}
+
+actor DynamoDishElecFXF2 : DynamoDishElecFX {
+	states {
+		Spawn:
+			DYPJ W 0
+			DYPJ W 1
+		stop
+	}
+}
+
+actor DynamoTagged : Powerup {
+	Powerup.Duration 12
+}
+
+actor DynamoTagPickup : CustomInventory {
+	States {
+		Pickup:
+			TNT1 A 0
+			TNT1 A 0 A_JumpIfInventory("DynamoTagged", 1, 2)
+			TNT1 A 0 A_SpawnItemEx("DynamoTagWatcher")
+			TNT1 A 0 A_GiveInventory("DynamoTagged", 1)
+		stop
+	}
+}
+
+actor DynamoTagWatcher : BasicHelper {
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 4 A_GiveToTarget("DynamoTagFX", 1)
+			TNT1 A 0 A_JumpIfInTargetInventory("DynamoTagged", 1, "Spawn")
+		stop
+	}
+}
+
+actor DynamoTagFX : CustomInventory {
+	States {
+		Pickup:
+			TNT1 A 0
+			TNT1 A 0 A_SpawnItemEx("DynamoTagGFX", random(16, 52), 0, Random(16, 48), 0, 0, 0, random(0, 359), 1)
+		stop
+	}
+}
+
+actor DynamoTagGFX : BasicClientSide {
+	+FLOATBOB
+	Scale 1.0
+	States {
+		Spawn:
+			DYPJ XYZ 2 bright A_Fadeout(0.1)
+		loop
+	}
+}
+
+actor DynamomanMain1_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracer", 0, 0, 0, (args[2] / 62 + 1) * 66, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle+ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM), 1)
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracer2", 0, 0, 0, (args[2] / 62 + 1) * 33, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle-ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)-4, 1)
+		goto Done
+		FireB:
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracerB", 0, 0, 0, (args[2] / 62 + 1) * 66, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle+ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM), 1)
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracer2B", 0, 0, 0, (args[2] / 62 + 1) * 33, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle-ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)-4, 1)
+		goto Done
+		FireR:
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracerR", 0, 0, 0, (args[2] / 62 + 1) * 66, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle+ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM), 1)
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracer2R", 0, 0, 0, (args[2] / 62 + 1) * 33, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle-ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)-4, 1)
+		goto Done
+		FireO:
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracerO", 0, 0, 0, (args[2] / 62 + 1) * 66, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle+ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM), 1)
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracer2O", 0, 0, 0, (args[2] / 62 + 1) * 33, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle-ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)-4, 1)
+		goto Done
+		FireP:
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracerP", 0, 0, 0, (args[2] / 62 + 1) * 66, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle+ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM), 1)
+			TNT1 A 0 A_SpawnItemEx("LightningOrbTracer2P", 0, 0, 0, (args[2] / 62 + 1) * 33, 0, 0, ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE_NUM)-angle-ACS_ExecuteWithResult(C_GET_USER_VAR, WEPANGLE2_NUM)-4, 1)
+		goto Done
+	}
+}
+
+actor DynamomanMain2_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynamoSuperSpawner", random(-45, 45), 0, 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynamoSuperSpawnerB", random(-45, 45), 0, 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynamoSuperSpawnerR", random(-45, 45), 0, 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynamoSuperSpawnerO", random(-45, 45), 0, 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynamoSuperSpawnerP", random(-45, 45), 0, 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanAlt1_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynamoHomingOrb", 0, 0, 8, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynamoHomingOrbB", 0, 0, 8, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynamoHomingOrbR", 0, 0, 8, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynamoHomingOrbO", 0, 0, 8, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynamoHomingOrbP", 0, 0, 8, 0)
+		goto Done
+	}
+}
+
+actor DynamomanAlt2_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynamoDish", 0, 1, 8, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynamoDishB", 0, 1, 8, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynamoDishR", 0, 1, 8, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynamoDishO", 0, 1, 8, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynamoDishP", 0, 1, 8, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt1_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt1P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt2_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt2P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt3_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt3", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt3B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt3R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt3O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt3P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt4_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt4", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt4B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt4R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt4O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt4P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt5_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt5", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt5B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt5R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt5O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt5P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt6_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt6", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt6B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt6R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt6O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt6P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt7_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt7", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt7B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt7R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt7O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt7P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt8_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt8", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt8B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt8R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt8O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt8P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt9_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt9", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt9B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt9R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt9O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt9P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt10_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt10", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt10B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt10R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt10O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt10P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt11_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt11", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt11B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt11R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt11O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt11P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt12_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt12", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt12B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt12R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt12O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt12P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt13_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt13", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt13B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt13R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt13O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt13P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt14_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt14", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt14B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt14R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt14O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt14P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt15_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt15", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt15B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt15R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt15O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt15P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt16_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt16", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt16B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt16R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt16O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt16P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt17_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt17", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt17B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt17R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt17O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt17P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt18_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt18", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt18B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt18R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt18O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt18P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt19_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt19", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt19B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt19R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt19O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt19P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt20_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt20", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt20B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt20R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt20O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt20P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt21_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt21", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt21B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt21R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt21O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt21P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt22_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt22", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt22B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt22R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt22O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt22P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt23_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt23", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt23B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt23R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt23O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt23P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt24_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt24", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt24B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt24R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt24O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt24P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt25_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt25", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt25B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt25R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt25O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt25P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt26_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt26", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt26B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt26R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt26O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt26P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt27_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt27", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt27B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt27R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt27O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt27P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt28_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt28", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt28B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt28R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt28O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt28P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt29_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt29", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt29B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt29R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt29O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt29P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt30_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt30", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt30B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt30R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt30O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt30P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt31_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt31", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt31B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt31R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt31O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt31P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt32_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt32", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt32B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt32R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt32O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt32P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt33_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt33", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt33B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt33R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt33O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt33P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt34_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt34", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt34B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt34R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt34O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt34P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt35_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt35", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt35B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt35R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt35O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt35P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt36_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt36", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt36B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt36R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt36O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt36P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt37_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt37", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt37B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt37R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt37O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt37P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt38_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt38", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt38B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt38R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt38O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt38P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt39_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt39", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt39B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt39R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt39O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt39P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt40_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt40", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt40B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt40R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt40O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt40P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt41_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt41", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt41B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt41R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt41O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt41P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt42_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt42", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt42B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt42R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt42O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt42P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt43_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt43", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt43B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt43R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt43O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt43P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt44_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt44", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt44B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt44R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt44O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt44P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt45_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt45", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt45B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt45R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt45O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt45P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt46_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt46", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt46B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt46R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt46O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt46P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt47_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt47", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt47B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt47R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt47O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt47P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt48_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt48", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt48B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt48R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt48O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt48P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt49_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt49", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt49B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt49R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt49O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt49P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt50_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt50", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt50B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt50R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt50O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt50P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt51_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt51", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt51B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt51R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt51O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt51P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt52_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt52", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt52B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt52R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt52O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt52P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt53_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt53", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt53B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt53R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt53O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt53P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt54_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt54", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt54B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt54R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt54O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt54P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt55_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt55", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt55B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt55R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt55O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt55P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt56_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt56", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt56B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt56R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt56O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt56P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt57_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt57", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt57B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt57R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt57O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt57P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt58_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt58", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt58B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt58R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt58O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt58P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt59_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt59", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt59B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt59R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt59O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt59P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt60_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt60", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt60B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt60R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt60O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt60P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt61_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt61", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt61B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt61R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt61O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt61P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt62_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt62", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt62B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt62R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt62O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt62P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt63_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt63", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt63B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt63R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt63O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt63P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynamomanBolt64_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt64", 0, 0)
+		goto Done
+		FireB:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt64B", 0, 0)
+		goto Done
+		FireR:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt64R", 0, 0)
+		goto Done
+		FireO:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt64O", 0, 0)
+		goto Done
+		FireP:
+			TNT1 A 0 A_FireCustomMissile("DynaLBolt64P", 0, 0)
+		goto Done
+	}
+}
+
+actor DynaTeamRegen : CustomInventory {
+	States {
+		Pickup2:
+			TNT1 A 0 A_JumpIf(ACS_ExecuteWithResult(975, 0)==2, "No")
+			TNT1 A 0 A_JumpIf(!(health>0), "No")
+			TNT1 A 0 HealThing(1)
+		stop
+		Pickup3:
+			TNT1 A 0 A_JumpIf(!(health>0), "No")
+			TNT1 A 0 HealThing(1)
+		stop
+		No:
+			TNT1 A 1
+		stop
+	}
+}
+
+actor DynaTeamRegen_B : DynaTeamRegen {
+	States {
+		Pickup:
+			TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("core_getplayerteam", -1)==0, "Pickup3")
+		stop
+	}
+}
+
+actor DynaTeamRegen_R : DynaTeamRegen {
+	States {
+		Pickup:
+			TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("core_getplayerteam", -1)==1, "Pickup3")
+		stop
+	}
+}
+
+actor DynaTeamRegen_O : DynaTeamRegen {
+	States {
+		Pickup:
+			TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("core_getplayerteam", -1)==2, "Pickup3")
+		stop
+	}
+}
+
+actor DynaTeamRegen_P : DynaTeamRegen {
+	States {
+		Pickup:
+			TNT1 A 0 A_JumpIf(ACS_NamedExecuteWithResult("core_getplayerteam", -1)==3, "Pickup3")
+		stop
+	}
+}
+
+actor DynamomanHeal_HelperB : BasicHelper {
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 AAA 0 A_SpawnItemEx("DynamomanHealFX_B", random(24, 240), 0, random(-64, 16), 0, 0, random(4, 5), random(0, 359), 1)
+			TNT1 A 2
+		stop
+	}
+}
+
+actor DynamomanHeal_HelperR : BasicHelper {
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 AAA 0 A_SpawnItemEx("DynamomanHealFX_R", random(24, 240), 0, random(-64, 16), 0, 0, random(4, 5), random(0, 359), 1)
+			TNT1 A 2
+		stop
+	}
+}
+
+actor DynamomanHeal_HelperO : BasicHelper {
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 AAA 0 A_SpawnItemEx("DynamomanHealFX_O", random(24, 240), 0, random(-64, 16), 0, 0, random(4, 5), random(0, 359), 1)
+			TNT1 A 2
+		stop
+	}
+}
+
+actor DynamomanHeal_HelperP : BasicHelper {
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 AAA 0 A_SpawnItemEx("DynamomanHealFX_P", random(24, 240), 0, random(-64, 16), 0, 0, random(4, 5), random(0, 359), 1)
+			TNT1 A 2
+		stop
+	}
+}
+
+actor DynamomanHealFX_B : BasicClientSide {
+	VisibleToTeam 0
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 0 A_Jump(64, "Spawn3")
+			TNT1 A 0 A_Jump(128, "Spawn2")
+		goto Spawn1
+		Spawn1:
+			X_0C AAABBB 1 A_FadeOut(0.05)
+		loop
+		Spawn2:
+			X_0C CCCDDD 1 A_FadeOut(0.05)
+		loop
+		Spawn3:
+			X_0C EEEFFF 1 A_FadeOut(0.05)
+		loop
+	}
+}
+
+actor DynamomanHealFX_R : DynamomanHealFX_B {
+	VisibleToTeam 1
+}
+
+actor DynamomanHealFX_O : DynamomanHealFX_B {
+	VisibleToTeam 2
+}
+
+actor DynamomanHealFX_P : DynamomanHealFX_B {
+	VisibleToTeam 3
+}
+
+actor DynamomanOther_CI : TeamColor_CI {
+	states {
+		FireX:
+			TNT1 A 0 //A_RadiusGive("TeamRegen", 192, 2)
+		goto Done
+		FireB:
+			TNT1 A 0 A_SpawnItemEx("DynamomanHeal_HelperB", 0, 0, 28, 0, 0, 0, 0, 1)
+			TNT1 A 0 A_RadiusGive("DynaTeamRegen_B", 240, 2)//RGF_PLAYERS = 2|RGF_NOTARGET = 64
+		goto Done
+		FireR:
+			TNT1 A 0 A_SpawnItemEx("DynamomanHeal_HelperR", 0, 0, 28, 0, 0, 0, 0, 1)
+			TNT1 A 0 A_RadiusGive("DynaTeamRegen_R", 240, 2)
+		goto Done
+		FireO:
+			TNT1 A 0 A_SpawnItemEx("DynamomanHeal_HelperO", 0, 0, 28, 0, 0, 0, 0, 1)
+			TNT1 A 0 A_RadiusGive("DynaTeamRegen_O", 240, 2)
+		goto Done
+		FireP:
+			TNT1 A 0 A_SpawnItemEx("DynamomanHeal_HelperP", 0, 0, 28, 0, 0, 0, 0, 1)
+			TNT1 A 0 A_RadiusGive("DynaTeamRegen_P", 240, 2)
+		goto Done
+	}
+}
+

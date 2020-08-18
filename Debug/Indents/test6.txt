@@ -1,0 +1,62 @@
+actor DynamoTaggerFX : ElecTeleFX {
+	Translation "202:202=97:97", "199:199=194:194"
+	Alpha 0.90
+	+FORCEXYBILLBOARD
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 0
+			TNT1 A 1 //A_Stop
+			TNT1 A 0 A_Jump(256, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+			ELEA K 1
+		stop
+			ELEA L 1
+		stop
+			ELEA M 1
+		stop
+			ELEA N 1
+		stop
+			ELEA O 1
+		stop
+			ELEA P 1
+		stop
+			ELEA Q 1
+		stop
+			ELEA R 1
+		stop
+			ELEA S 1
+		stop
+	}
+}
+
+actor DynamoTaggerFX : ElecTeleFX {
+	Translation "202:202=97:97", "199:199=194:194"
+	Alpha 0.90
+	+FORCEXYBILLBOARD
+	States {
+		Spawn:
+			TNT1 A 0
+			TNT1 A 0
+			TNT1 A 1 //A_Stop
+			TNT1 A 0 A_Jump(256, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+			ELEA K 1
+		stop
+			ELEA L 1
+		stop
+			ELEA M 1
+		stop
+			ELEA N 1
+		stop
+			ELEA O 1
+		stop
+			ELEA P 1
+		stop
+			ELEA Q 1
+		stop
+			ELEA R 1
+		stop
+			ELEA S 1
+		stop
+	}
+}
+

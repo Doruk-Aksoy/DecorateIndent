@@ -1,0 +1,56 @@
+actor DynaFlag1 : DynaFlag { }
+
+actor DynaFlag2 : DynaFlag { }
+
+actor DynaFlag3 : DynaFlag { }
+
+actor DynaFlag4 : DynaFlag { }
+
+actor DynaFlag5 : DynaFlag { }
+
+actor DynaFlag6 : DynaFlag { }
+
+actor DynaFlag7 : DynaFlag { }
+
+actor DynaFlag8 : DynaFlag { }
+
+actor DynaFlag9 : DynaFlag { }
+
+actor DynaFlag10 : DynaFlag { }
+
+actor DynaFlag11 : DynaFlag { }
+
+actor DynaFlag12 : DynaFlag { }
+
+actor DynaFlag13 : DynaFlag { }
+
+actor DynaFlag14 : DynaFlag { }
+
+actor DynaFlag15 : DynaFlag { }
+
+actor DynaFlag16 : DynaFlag { }
+
+actor DynaFlag17 : DynaFlag { }
+
+actor DynaFlag18 : DynaFlag { }
+
+actor DynaFlag19 : DynaFlag { }
+
+actor DynaFlag20 : DynaFlag { }
+
+actor DynaFlag21 : DynaFlag { }
+
+actor DynaFlag22 : DynaFlag { }
+
+actor DynaFlag23 : DynaFlag { }
+
+actor DynaFlag24 : DynaFlag { }
+
+actor DynaFlag25 : DynaFlag { }
+
+actor DynaFlag26 : DynaFlag { }
+
+actor DynaFlag27 : DynaFlag { }
+
+actor DynaFlag28 : DynaFlag { }
+

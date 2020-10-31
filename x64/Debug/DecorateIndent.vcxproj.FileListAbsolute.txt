@@ -1,0 +1,2 @@
+C:\Users\PC\Documents\Projects\DecorateIndent\x64\Debug\DecorateIndent.exe
+C:\Users\PC\Documents\Projects\DecorateIndent\x64\Debug\DecorateIndent.pdb

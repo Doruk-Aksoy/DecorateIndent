@@ -1,0 +1,3462 @@
+Actor AssaultCaptain : AssaultTrooper {
+	Painchance 110
+	Health 110
+	GibHealth -50
+	Radius 20
+	Height 56
+	Scale 0.68
+	Speed 7
+	Mass 100
+	Floatspeed 12
+	Dropitem "GreenMana" 256
+	Dropitem "GreenHeroMana" 256
+	Dropitem "ShrinkArti", 2
+	Dropitem "AtomicHealth1", 4
+	Translation "209:223 = [240, 160, 80]:[216, 64, 24]", "240:246 = [216, 64, 24]:[112, 52, 20]", "248:255 = [112, 52, 20]:[0, 0, 0]",
+	"112:123 = [239, 219, 178]:[173, 99, 63]", "124:127 = [173, 99, 63]:[134, 77, 48]", "192:206 = [134, 77, 48]:[0, 0, 0]"
+	Obituary "%o was taken down by %k's Assault Captain."
+	Seesound "alien/sight"
+	Painsound "alien/pain"
+	Deathsound "alien/death"
+	Activesound "alien/active"
+	Bloodtype "DukeBleed"
+	Damagefactor "Sniper", 1.5
+	Damagefactor "Suppression2", 1.3
+	States {
+		Spawn:
+			ENE1 A 0
+			ENE7 A 0 A_CheckFloor("SpawnLand")
+			ENE1 H 0
+			ENE1 H 0 A_GiveInventory("alienjetpack", 1)
+			ENE1 H 0 A_ChangeFlag("FLOAT", TRUE)
+			ENE1 H 0 A_ChangeFlag("NOGRAVITY", TRUE)
+			ENE1 H 0 A_ChangeFlag("AVOIDMELEE", TRUE)
+			ENE1 HH 10 A_Look
+		Goto See
+		SpawnLand:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 A 0
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "Idle2", 0)
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+			ENE1 A 0  A_Jump(5, "FlyStart")
+		Loop
+		See:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "See2", 0)
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 CCCDDD 2 A_Chase
+			ENE1 A 0 A_Jump(140, 2)
+			ENE1 A 0 A_CheckFlag("FLOAT", "FlyStart", AAPTR_TARGET)
+			ENE1 A 0 A_Jump(10, "FlyStart")
+		Goto See
+		Giveup:
+			ENE1 A 0
+			ENE1 A 0 A_Cleartarget
+		Goto see
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyPain", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("AlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("AlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("AlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("AlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("AlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain:
+			ENE1 I 0 A_JumpifInventory("alienjetpack", 1, "FlyPain", 0)
+			ENE1 A 0 A_JumpIf(health > = 10, 2)
+			ENE1 A 0 A_Die("Choke")
+			ENE1 I 0 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 A 6 A_Pain
+			ENE1 A 0 A_Jump(80, "See")
+			ENE1 A 0 A_Jump(60, "Missile2")
+		Goto teleport
+		Teleport:
+			ENE1 T 5 A_UnsetShootable
+			ENE1 T 0 A_ChangeFlag("NOPAIN", 1)
+			ENE1 U 5 A_CustomMissile("AlienTeleport", 0, 0, 0)
+			ENE1 U 1 A_SetScale(0.6, 0.68)
+			ENE1 U 1 A_SetScale(0.5, 0.68)
+			ENE1 U 1 A_SetScale(0.4, 0.68)
+			ENE1 U 1 A_SetScale(0.3, 0.68)
+			ENE1 U 1 A_SetScale(0.2, 0.68)
+			ENE1 U 1 A_SetScale(0.1, 0.68)
+			ENE1 U 0 A_ChangeFlag("INVISIBLE", 1)
+			ENE1 U 0 A_UnsetSolid
+			TNT1 QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ 1 A_Wander
+			TNT1 QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ 1 A_ExtChase(0, 0, 0, 0)
+			TNT1 A 0 A_ChangeFlag("INVISIBLE", 0)
+			ENE1 U 0 A_SetSolid
+			ENE1 U 1 A_SetScale(0.1, 0.68)
+			ENE1 U 1 A_SetScale(0.2, 0.68)
+			ENE1 U 1 A_SetScale(0.3, 0.68)
+			ENE1 U 1 A_SetScale(0.4, 0.68)
+			ENE1 U 1 A_SetScale(0.5, 0.68)
+			ENE1 U 1 A_SetScale(0.6, 0.68)
+			TNT1 A 5 A_CustomMissile("AlienTeleport", 0, 0, 0)
+			TNT1 A 0 A_SetShootable
+			ENE1 T 0 A_ChangeFlag("NOPAIN", 0)
+			ENE1 T 5
+			ENE1 R 6 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("AlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 R 6
+		Goto Missile2
+		Pain.DOOMConvert:
+			ENE1 A 0 A_Die("DOOMConvert")
+		Stop
+		Death.DOOMConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DoomConvert2")
+			ENE1 A 0 A_SpawnItemEx("DoomAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DoomConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("DoomAssaultCaptain")
+		Stop
+		Pain.HereticConvert:
+			ENE1 A 0 A_Die("HereticConvert")
+		Stop
+		Death.HereticConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.HereticConvert2")
+			ENE1 A 0 A_SpawnItemEx("HereticAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.HereticConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("HereticAssaultCaptain")
+		Stop
+		Pain.HexenConvert:
+			ENE1 A 0 A_Die("HexenConvert")
+		Stop
+		Death.HexenConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.HexenConvert2")
+			ENE1 A 0 A_SpawnItemEx("HexenAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.HexenConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("HexenAssaultCaptain")
+		Stop
+		Pain.StrifeConvert:
+			ENE1 A 0 A_Die("StrifeConvert")
+		Stop
+		Death.StrifeConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.StrifeConvert2")
+			ENE1 A 0 A_SpawnItemEx("StrifeAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.StrifeConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("StrifeAssaultCaptain")
+		Stop
+		Pain.ChexConvert:
+			ENE1 A 0 A_Die("ChexConvert")
+		Stop
+		Death.ChexConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.ChexConvert2")
+			ENE1 A 0 A_SpawnItemEx("ChexAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.ChexConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("ChexAssaultCaptain")
+		Stop
+		Pain.VirusConvert:
+			ENE1 A 0 A_Die("VirusConvert")
+		Stop
+		Death.VirusConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.VirusConvert2")
+			ENE1 A 0 A_SpawnItemEx("VirusAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.VirusConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("VirusAssaultCaptain")
+		Stop
+		Pain.BlueConvert:
+			ENE1 A 0 A_Die("BlueConvert")
+		Stop
+		Death.BlueConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.BlueConvert2")
+			ENE1 A 0 A_SpawnItemEx("BlueAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.BlueConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("BlueAssaultCaptain")
+		Stop
+		Pain.GreenConvert:
+			ENE1 A 0 A_Die("GreenConvert")
+		Stop
+		Death.GreenConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.GreenConvert2")
+			ENE1 A 0 A_SpawnItemEx("GreenAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.GreenConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("GreenAssaultCaptain")
+		Stop
+		Pain.RedConvert:
+			ENE1 A 0 A_Die("RedConvert")
+		Stop
+		Death.RedConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.RedConvert2")
+			ENE1 A 0 A_SpawnItemEx("RedAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.RedConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("RedAssaultCaptain")
+		Stop
+		Pain.SilverConvert:
+			ENE1 A 0 A_Die("SilverConvert")
+		Stop
+		Death.SilverConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.SilverConvert2")
+			ENE1 A 0 A_SpawnItemEx("SilverAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.SilverConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("SilverAssaultCaptain")
+		Stop
+		Pain.YellowConvert:
+			ENE1 A 0 A_Die("YellowConvert")
+		Stop
+		Death.YellowConvert:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.YellowConvert2")
+			ENE1 A 0 A_SpawnItemEx("GoldAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			ENE1 A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.YellowConvert2:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("GoldAssaultCaptain")
+		Stop
+		XDeath:
+			TNT1 A 0 A_NoBlocking
+			TNT1 A 0 A_PlaySound("gibbage/xsplat")
+			TNT1 A 0 A_SpawnItemEx ("AlienHead", 0, 0, 0, random(4, 6), random(4, 6), random(4, 6), random(0, 360), 128 | SXF_TRANSFERTRANSLATION)
+			TNT1 A 0 A_SpawnItemEx ("AlienGreenLeg", 0, 0, 0, random(4, 6), random(4, 6), random(4, 6), random(0, 360), 128 | SXF_TRANSFERTRANSLATION)
+			TNT1 A 0 A_SpawnItemEx ("AlienGreenArm", 0, 0, 0, random(4, 6), random(4, 6), random(4, 6), random(0, 360), 128 | SXF_TRANSFERTRANSLATION)
+			TNT1 A 0 A_SpawnItem("DUKEGIBBER")
+			TNT1 A 3 A_Stopsound("SoundSlot7")
+		Stop
+		Pain.DukeRemoverVanilla:
+			ENE1 A 0 A_Die("DukeRemoverVanilla")
+		Stop
+		Death.DukeRemoverVanilla:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("AlienTeleport")
+			TROO A 0 A_SpawnItem ("GreenMana")
+			TROO A 0 A_SpawnItem ("GreenHeroMana")
+		Stop
+		Pain.DukeTeleporterVanilla:
+			SKUL A 0 A_GiveInventory("TeleportCount", 1)
+			SKUL A 0 HealThing(1)
+			SKUL A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(685, 0, 4, 0), "See")
+			SKUL A 0 Teleport(2040, 0, 0)
+		Goto See
+	}
+}
+
+Actor AssaultCaptain2 : AssaultCaptain {
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+	}
+}
+
+Actor AssaultCaptain3 : AssaultCaptain  //Upgraded {
+ 	{
+	Death.Choke:
+		ENE1 I 0 A_NoBlocking
+		ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+	Stop
+}
+}
+
+Actor AssaultCaptain4 : AssaultCaptain2  //Upgraded no jetpack {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor AssaultCaptainRevive : AssaultCaptain {
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "Idle2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Loop
+		See:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "See2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+			ENE1 A 0  A_Jump(140, 2)
+			ENE1 A 0 A_CheckFlag("FLOAT", "FlyStart", AAPTR_TARGET)
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 0 A_JumpifInventory("alienjetpack", 1, "FlyPain", 0)
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+	}
+}
+
+Actor AssaultCaptainRevive2 : AssaultCaptain2 {
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+	}
+}
+
+Actor AlienRedBullet : DukeLaser {
+	Obituary "%o was outsmarted by %k's Assault Captains."
+	Damage (random(8, 10))
+}
+
+ACTOR AlienTeleport {
+	+NOBLOCKMAP
+	+NOTELEPORT
+	+NOGRAVITY
+	RenderStyle Add
+	States {
+		Spawn:
+			DKTL A 0
+			DKTL A 2 Bright A_PlaySound("duke/teleport")
+			DKTL BCDEF 2 Bright
+		Stop
+	}
+}
+
+Actor RedAssaultCaptain : AssaultCaptain {
+	Translation "209:223 = [240, 160, 80]:[216, 64, 24]", "240:246 = [216, 64, 24]:[112, 52, 20]", "248:255 = [112, 52, 20]:[0, 0, 0]",
+	"112:127 = 172:180", "192:206 = 181:191"
+	Painchance "RedDukeRemover", 255
+	Painchance "DukeRemoverVanilla", 0
+	Painchance "DukeTeleporterVanilla", 0
+	Painchance "DukeTeleporterRed", 255
+	Painchance "VanillaSteroid", 0
+	Painchance "RedSteroid", 255
+	Painchance "BlueSteroid", 0
+	Painchance "GreenSteroid", 0
+	Painchance "GoldSteroid", 0
+	Painchance "SilverSteroid", 0
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("redAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("redAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("RedAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("RedAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("RedAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.RedDukeRemover:
+			ENE1 A 0 A_Die("RedDukeRemover")
+		Stop
+		Death.RedDukeRemover:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("AlienTeleport")
+			TROO A 0 A_SpawnItem ("GreenMana")
+			TROO A 0 A_SpawnItem ("GreenHeroMana")
+		Stop
+		Pain.DukeTeleporterRed:
+			SKUL A 0 A_GiveInventory("TeleportCount", 1)
+			SKUL A 0 HealThing(1)
+			SKUL A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(685, 0, 4, 0), "See")
+			SKUL A 0 Teleport(2041, 0, 0)
+		Goto See
+	}
+}
+
+Actor RedAssaultCaptain2 : RedAssaultCaptain {
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpIfHealthLower(10, "Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+	}
+}
+
+Actor RedAssaultCaptain3 : RedAssaultCaptain  //Upgraded {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor RedAssaultCaptain4 : RedAssaultCaptain2  //Upgraded no jetpack {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor RedAlienRedBullet : AlienRedBullet {
+}
+
+Actor BlueAssaultCaptain : AssaultCaptain {
+	Translation "209:223 = [240, 160, 80]:[216, 64, 24]", "240:246 = [216, 64, 24]:[112, 52, 20]", "248:255 = [112, 52, 20]:[0, 0, 0]",
+	"112:127 = 194:200", "192:202 = 201:207", "203:206 = 240:247"
+	Painchance "BlueDukeRemover", 255
+	Painchance "DukeRemoverVanilla", 0
+	Painchance "DukeTeleporterVanilla", 0
+	Painchance "DukeTeleporterBlue", 255
+	Painchance "VanillaSteroid", 0
+	Painchance "RedSteroid", 0
+	Painchance "BlueSteroid", 255
+	Painchance "GreenSteroid", 0
+	Painchance "GoldSteroid", 0
+	Painchance "SilverSteroid", 0
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("blueAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("blueAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("BlueAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("BlueAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("BlueAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.BlueDukeRemover:
+			ENE1 A 0 A_Die("BlueDukeRemover")
+		Stop
+		Death.BlueDukeRemover:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("AlienTeleport")
+			TROO A 0 A_SpawnItem ("GreenMana")
+			TROO A 0 A_SpawnItem ("GreenHeroMana")
+		Stop
+		Pain.DukeTeleporterBlue:
+			SKUL A 0 A_GiveInventory("TeleportCount", 1)
+			SKUL A 0 HealThing(1)
+			SKUL A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(685, 0, 4, 0), "See")
+			SKUL A 0 Teleport(2042, 0, 0)
+		Goto See
+	}
+}
+
+Actor BlueAssaultCaptain2 : BlueAssaultCaptain {
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+	}
+}
+
+Actor BlueAssaultCaptain3 : BlueAssaultCaptain  //Upgraded {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor BlueAssaultCaptain4 : BlueAssaultCaptain2  //Upgraded no jetpack {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor BlueAlienRedBullet : AlienRedBullet {
+}
+
+Actor GreenAssaultCaptain : AssaultCaptain {
+	Translation "209:223 = [240, 160, 80]:[216, 64, 24]", "240:246 = [216, 64, 24]:[112, 52, 20]", "248:255 = [112, 52, 20]:[0, 0, 0]",
+	"112:127 = 112:119", "192:207 = 120:127"
+	Painchance "GreenDukeRemover", 255
+	Painchance "DukeRemoverVanilla", 0
+	Painchance "DukeTeleporterVanilla", 0
+	Painchance "DukeTeleporterGreen", 255
+	Painchance "VanillaSteroid", 0
+	Painchance "RedSteroid", 0
+	Painchance "BlueSteroid", 0
+	Painchance "GreenSteroid", 255
+	Painchance "GoldSteroid", 0
+	Painchance "SilverSteroid", 0
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("greenAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("greenAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("GreenAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("GreenAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("GreenAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.GreenDukeRemover:
+			ENE1 A 0 A_Die("GreenDukeRemover")
+		Stop
+		Death.GreenDukeRemover:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("AlienTeleport")
+			TROO A 0 A_SpawnItem ("GreenMana")
+			TROO A 0 A_SpawnItem ("GreenHeroMana")
+		Stop
+		Pain.DukeTeleporterGreen:
+			SKUL A 0 A_GiveInventory("TeleportCount", 1)
+			SKUL A 0 HealThing(1)
+			SKUL A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(685, 0, 4, 0), "See")
+			SKUL A 0 Teleport(2043, 0, 0)
+		Goto See
+	}
+}
+
+Actor GreenAssaultCaptain2 : GreenAssaultCaptain {
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+	}
+}
+
+Actor GreenAssaultCaptain3 : GreenAssaultCaptain  //Upgraded {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor GreenAssaultCaptain4 : GreenAssaultCaptain2  //Upgraded no jetpack {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor GreenAlienRedBullet : AlienRedBullet {
+}
+
+Actor GoldAssaultCaptain : AssaultCaptain {
+	Painchance "GoldDukeRemover", 255
+	Painchance "DukeRemoverVanilla", 0
+	Painchance "DukeTeleporterVanilla", 0
+	Painchance "DukeTeleporterGold", 255
+	Translation "209:223 = [240, 160, 80]:[216, 64, 24]", "240:246 = [216, 64, 24]:[112, 52, 20]", "248:255 = [112, 52, 20]:[0, 0, 0]",
+	"112:123 = 224:227", "124:127 = 160:161", "192:206 = 161:167"
+	Painchance "VanillaSteroid", 0
+	Painchance "RedSteroid", 0
+	Painchance "BlueSteroid", 0
+	Painchance "GreenSteroid", 0
+	Painchance "GoldSteroid", 255
+	Painchance "SilverSteroid", 0
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("goldAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("goldAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("GoldAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("GoldAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("GoldAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.GoldDukeRemover:
+			ENE1 A 0 A_Die("GoldDukeRemover")
+		Stop
+		Death.GoldDukeRemover:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("AlienTeleport")
+			TROO A 0 A_SpawnItem ("GreenMana")
+			TROO A 0 A_SpawnItem ("GreenHeroMana")
+		Stop
+		Pain.DukeTeleporterGold:
+			SKUL A 0 A_GiveInventory("TeleportCount", 1)
+			SKUL A 0 HealThing(1)
+			SKUL A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(685, 0, 4, 0), "See")
+			SKUL A 0 Teleport(2044, 0, 0)
+		Goto See
+	}
+}
+
+Actor GoldAssaultCaptain2 : GoldAssaultCaptain {
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+	}
+}
+
+Actor GoldAssaultCaptain3 : GoldAssaultCaptain  //Upgraded {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor GoldAssaultCaptain4 : GoldAssaultCaptain2  //Upgraded no jetpack {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor GoldAlienRedBullet : AlienRedBullet {
+}
+
+Actor SilverAssaultCaptain : AssaultCaptain {
+	Painchance "SilverDukeRemover", 255
+	Painchance "DukeRemoverVanilla", 0
+	Painchance "DukeTeleporterVanilla", 0
+	Painchance "DukeTeleporterSilver", 255
+	Translation "209:223 = [240, 160, 80]:[216, 64, 24]", "240:246 = [216, 64, 24]:[112, 52, 20]", "248:255 = [112, 52, 20]:[0, 0, 0]",
+	"112:127 = 84:95", "192:207 = 96:111"
+	Painchance "VanillaSteroid", 0
+	Painchance "RedSteroid", 0
+	Painchance "BlueSteroid", 0
+	Painchance "GreenSteroid", 0
+	Painchance "GoldSteroid", 0
+	Painchance "SilverSteroid", 255
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("SilverAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("SilverAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("SilverAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("SilverAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("SilverAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.SilverDukeRemover:
+			ENE1 A 0 A_Die("SilverDukeRemover")
+		Stop
+		Death.SilverDukeRemover:
+			ENE1 A 0 A_UnsetSolid
+			ENE1 A 0 A_SpawnItemEx("AlienTeleport")
+			TROO A 0 A_SpawnItem ("GreenMana")
+			TROO A 0 A_SpawnItem ("GreenHeroMana")
+		Stop
+		Pain.DukeTeleporterSilver:
+			SKUL A 0 A_GiveInventory("TeleportCount", 1)
+			SKUL A 0 HealThing(1)
+			SKUL A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(685, 0, 4, 0), "See")
+			SKUL A 0 Teleport(2045, 0, 0)
+		Goto See
+	}
+}
+
+Actor SilverAssaultCaptain2 : SilverAssaultCaptain {
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+	}
+}
+
+Actor SilverAssaultCaptain3 : SilverAssaultCaptain  //Upgraded {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor SilverAssaultCaptain4 : SilverAssaultCaptain2  //Upgraded no jetpack {
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("AssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+	}
+}
+
+Actor SilverAlienRedBullet : AlienRedBullet {
+}
+
+//Red Team
+
+ACTOR DRAssaultCaptain : RedAssaultCaptain {
+	DamageFactor "RedMissile", 0
+	DamageFactor "RedSuppression", 0
+	Damagefactor "BlueSniper", 1.3
+	Damagefactor "BlueSuppression2", 1.2
+	Damagefactor "GreenSniper", 1.3
+	Damagefactor "GreenSuppression2", 1.2
+	Damagefactor "SilverSniper", 1.3
+	Damagefactor "SilverSuppression2", 1.2
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DRConvert", 0
+	Painchance "RedTeamTeleporter", 255
+	Painchance DRRobo, 0
+	DesignatedTeam 0
+	Painchance "DRSteroid", 255
+	Painchance "DBSteroid", 0
+	Painchance "DGSteroid", 0
+	Painchance "DSSteroid", 0
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("DRAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("DRAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("DRAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("DRAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("DRAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.RedTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2036, 0, 0)
+		Goto See
+	}
+}
+
+Actor DRAssaultCaptain2 : DRAssaultCaptain {
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DRConvert", 0
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.RedTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2036, 0, 0)
+		Goto See
+	}
+}
+
+Actor DRAssaultCaptain3 : DRAssaultCaptain  //Upgraded {
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DRConvert", 0
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("DRAssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.RedTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2036, 0, 0)
+		Goto See
+	}
+}
+
+Actor DRAssaultCaptain4 : DRAssaultCaptain2  //Upgraded no jetpack {
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DRConvert", 0
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("DRAssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.RedTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2036, 0, 0)
+		Goto See
+	}
+}
+
+Actor DRAssaultCaptainRevive : DRAssaultCaptain {
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DRConvert", 0
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "Idle2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Loop
+		See:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "See2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+			ENE1 A 0  A_Jump(140, 2)
+			ENE1 A 0 A_CheckFlag("FLOAT", "FlyStart", AAPTR_TARGET)
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 0 A_JumpifInventory("alienjetpack", 1, "FlyPain", 0)
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.RedTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2036, 0, 0)
+		Goto See
+	}
+}
+
+Actor DRAssaultCaptainRevive2 : DRAssaultCaptain2 {
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DRConvert", 0
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.RedTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2036, 0, 0)
+		Goto See
+	}
+}
+
+	//Blue Team
+
+ACTOR DBAssaultCaptain : BlueAssaultCaptain {
+	DamageFactor "RedSniper", 1.3
+	DamageFactor "RedSuppression2", 1.2
+	Damagefactor "BlueMissile", 0
+	Damagefactor "BlueSuppression", 0
+	Damagefactor "GreenSniper", 1.3
+	Damagefactor "GreenSuppression2", 1.2
+	Damagefactor "SilverSniper", 1.3
+	Damagefactor "SilverSuppression2", 1.2
+	Painchance "DRConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DBConvert", 0
+	Painchance "BlueTeamTeleporter", 255
+	Painchance DBRobo, 0
+	DesignatedTeam 1
+	Painchance "DRSteroid", 0
+	Painchance "DBSteroid", 255
+	Painchance "DGSteroid", 0
+	Painchance "DSSteroid", 0
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("DBAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("DBAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("DBAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("DBAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("DBAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.BlueTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2037, 0, 0)
+		Goto See
+	}
+}
+
+Actor DBAssaultCaptain2 : DBAssaultCaptain {
+	Painchance "DRConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DBConvert", 0
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.BlueTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2037, 0, 0)
+		Goto See
+	}
+}
+
+Actor DBAssaultCaptain3 : DBAssaultCaptain  //Upgraded {
+	Painchance "DRConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DBConvert", 0
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("DBAssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.BlueTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2037, 0, 0)
+		Goto See
+	}
+}
+
+Actor DBAssaultCaptain4 : DBAssaultCaptain2  //Upgraded no jetpack {
+	Painchance "DRConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DBConvert", 0
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("DBAssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain4", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain4")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain4", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain4")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain4", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain4")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain4", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain4")
+		Stop
+	}
+}
+
+Actor DBAssaultCaptainRevive : DBAssaultCaptain {
+	Painchance "DRConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DBConvert", 0
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "Idle2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Loop
+		See:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "See2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+			ENE1 A 0  A_Jump(140, 2)
+			ENE1 A 0 A_CheckFlag("FLOAT", "FlyStart", AAPTR_TARGET)
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 0 A_JumpifInventory("alienjetpack", 1, "FlyPain", 0)
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.BlueTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2037, 0, 0)
+		Goto See
+	}
+}
+
+Actor DBAssaultCaptainRevive2 : DBAssaultCaptain2 {
+	Painchance "DRConvert", 255
+	Painchance "DGConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DBConvert", 0
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.BlueTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2037, 0, 0)
+		Goto See
+	}
+}
+
+	//Green Team
+
+ACTOR DGAssaultCaptain : GreenAssaultCaptain {
+	DamageFactor "RedSniper", 1.3
+	DamageFactor "RedSuppression2", 1.2
+	Damagefactor "BlueSniper", 1.3
+	Damagefactor "BlueSuppression2", 1.2
+	Damagefactor "GreenMissile", 0
+	Damagefactor "GreenSuppression", 0
+	Damagefactor "SilverSniper", 1.3
+	Damagefactor "SilverSuppression2", 1.2
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DGConvert", 0
+	Painchance "GreenTeamTeleporter", 255
+	Painchance DGRobo, 0
+	DesignatedTeam 2
+	Painchance "DRSteroid", 0
+	Painchance "DBSteroid", 0
+	Painchance "DGSteroid", 255
+	Painchance "DSSteroid", 0
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("DGAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("DGAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("DGAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("DGAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("DGAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.GreenTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2038, 0, 0)
+		Goto See
+	}
+}
+
+Actor DGAssaultCaptain2 : DGAssaultCaptain {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DGConvert", 0
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.GreenTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2038, 0, 0)
+		Goto See
+	}
+}
+
+Actor DGAssaultCaptain3 : DGAssaultCaptain  //Upgraded {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DGConvert", 0
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("DGAssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.GreenTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2038, 0, 0)
+		Goto See
+	}
+}
+
+Actor DGAssaultCaptain4 : DGAssaultCaptain2  //Upgraded no jetpack {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DGConvert", 0
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("DGAssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.GreenTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2038, 0, 0)
+		Goto See
+	}
+}
+
+Actor DGAssaultCaptainRevive : DGAssaultCaptain {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DGConvert", 0
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "Idle2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Loop
+		See:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "See2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+			ENE1 A 0  A_Jump(140, 2)
+			ENE1 A 0 A_CheckFlag("FLOAT", "FlyStart", AAPTR_TARGET)
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 0 A_JumpifInventory("alienjetpack", 1, "FlyPain", 0)
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.GreenTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2038, 0, 0)
+		Goto See
+	}
+}
+
+Actor DGAssaultCaptainRevive2 : DGAssaultCaptain2 {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DSConvert", 255
+	DamageFactor "DGConvert", 0
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCDDD 2 A_Chase
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.GreenTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2038, 0, 0)
+		Goto See
+	}
+}
+
+	//Silver Team
+
+ACTOR DSAssaultCaptain : SilverAssaultCaptain {
+	DamageFactor "RedSniper", 1.3
+	DamageFactor "RedSuppression", 1.2
+	Damagefactor "BlueSniper", 1.3
+	Damagefactor "BlueSuppression2", 1.2
+	Damagefactor "GreenSniper", 1.3
+	Damagefactor "GreenSuppression2", 1.2
+	Damagefactor "SilverMissile", 0
+	Damagefactor "SilverSuppression", 0
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	DamageFactor "DSConvert", 0
+	Painchance "SilverTeamTeleporter", 255
+	Painchance DSRobo, 0
+	DesignatedTeam 3
+	Painchance "DRSteroid", 0
+	Painchance "DBSteroid", 0
+	Painchance "DGSteroid", 0
+	Painchance "DSSteroid", 255
+	States {
+		Missile:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "FlyMissile", 0)
+			ENE1 E 0 A_Jump(20, "Teleport")
+			ENE1 E 0 A_Jump(150, "Missile2")
+			ENE1 E 4 A_FaceTarget
+			ENE1 E 0 A_PlayWeaponSound("alien/attack")
+			ENE1 F 6 bright A_CustomMissile("DSAlienRedBullet", 32, 0, random(-3, 3))
+			ENE1 E 3
+		Goto See
+		Missile2:
+			ENE1 R 4 A_FaceTarget
+			ENE1 R 0 A_PlayWeaponSound("alien/attack")
+			ENE1 S 6 bright A_CustomMissile("DSAlienRedBullet", 32, 0, 0)
+			ENE1 R 3
+		Goto See
+		FlyMissile:
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("DSAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 0 bright A_CustomMissile("DSAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+			ENE1 H 0 A_Jump(60, "See2")
+			ENE1 G 0 A_FaceTarget
+			ENE1 G 0 A_PlayWeaponSound("alien/attack")
+			ENE1 G 3 bright A_CustomMissile("DSAlienRedBullet", 32, 0, random(-10, 10))
+			ENE1 HHH 3 A_Chase
+		Goto See2
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.SilverTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2039, 0, 0)
+		Goto See
+	}
+}
+
+Actor DSAssaultCaptain2 : DSAssaultCaptain {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	DamageFactor "DSConvert", 0
+	States {
+		Spawn:
+			ENE1 AB 10 A_Look
+		Goto See
+		Idle:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 I 0 A_JumpIf(health > = 10, 2)
+			ENE1 I 0 A_Die("Choke")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Loop
+		Flystart:
+		Goto see
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.SilverTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2039, 0, 0)
+		Goto See
+	}
+}
+
+Actor DSAssaultCaptain3 : DSAssaultCaptain  //Upgraded {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	DamageFactor "DSConvert", 0
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("DSAssaultCaptainRevive", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.SilverTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2039, 0, 0)
+		Goto See
+	}
+}
+
+Actor DSAssaultCaptain4 : DSAssaultCaptain2  //Upgraded no jetpack {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	DamageFactor "DSConvert", 0
+	States {
+		Death.Choke:
+			ENE1 I 0 A_NoBlocking
+			ENE1 I 1 A_SpawnItemEx("DSAssaultCaptainRevive2", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERTRANSLATION)
+		Stop
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.SilverTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2039, 0, 0)
+		Goto See
+	}
+}
+
+Actor DSAssaultCaptainRevive : DSAssaultCaptain {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	DamageFactor "DSConvert", 0
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "Idle2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Loop
+		See:
+			ENE1 A 0 A_JumpifInventory("alienjetpack", 1, "See2", 0)
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+			ENE1 A 0  A_Jump(140, 2)
+			ENE1 A 0 A_CheckFlag("FLOAT", "FlyStart", AAPTR_TARGET)
+			ENE1 A 0  A_Jump(10, "FlyStart")
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 0 A_JumpifInventory("alienjetpack", 1, "FlyPain", 0)
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.SilverTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2039, 0, 0)
+		Goto See
+	}
+}
+
+Actor DSAssaultCaptainRevive2 : DSAssaultCaptain2 {
+	Painchance "DRConvert", 255
+	Painchance "DBConvert", 255
+	Painchance "DGConvert", 255
+	DamageFactor "DSConvert", 0
+	Health 30
+	+NONSHOOTABLE
+	+NEVERTARGET
+	States {
+		Spawn:
+			ENE1 I 0
+			ENE1 I 0 A_ChangeFlag("NEVERTARGET", 0)
+			ENE1 I 0 A_SetShootable
+		Goto Revive
+		Revive:
+			ENE1 I 4 A_Scream
+			ENE1 I 4 A_PlaySound("alien/choke", 6)
+			ENE1 JKO 6
+			ENE1 POPOPOPOOOOO 6
+			ENE1 KJI 10
+			ENE1 I 0 A_StopSound
+			ENE1 I 1 A_PlaySound("alien/sight", 2)
+		Goto See
+		Idle:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "IdleSteroids")
+			ENE1 G 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 AAABBB 3 A_Wander
+			ENE1 C 0 A_LookEx(0, 0, 0, 0, 360, "See")
+			ENE1 CCCDDD 3 A_Wander
+		Loop
+		See:
+			ENE1 A 0 A_JumpIfInventory("InSteroids", 1, "SeeSteroids")
+			ENE1 A 0 A_JumpIfTargetInLOS(2, 140)
+			ENE1 A 0 A_Jump(20, "Giveup")
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 AAABBB 2 A_Chase
+			ENE1 A 0 A_PlaySound("gibbage/xhrstep")
+			ENE1 CCCDDD 2 A_Chase
+		Goto See
+		Pain:
+			ENE1 A 0
+			ENE1 I 1 A_SpawnItemEx("DukeBleed", 0, 0, random(6, 64), random(-9, -6) , random(-6, 6), random(0, 6), 0, 128)
+			ENE1 I 1 A_Pain
+		Goto See
+		Death.Choke:
+		Goto Death
+		Pain.DRConvert:
+			TROO A 0 A_Die("DRConvert")
+		Stop
+		Death.DRConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DRConvert2")
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DRConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DRAssaultCaptain")
+		Stop
+		Pain.DBConvert:
+			TROO A 0 A_Die("DBConvert")
+		Stop
+		Death.DBConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DBConvert2")
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DBConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DBAssaultCaptain")
+		Stop
+		Pain.DGConvert:
+			TROO A 0 A_Die("DGConvert")
+		Stop
+		Death.DGConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DGConvert2")
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DGConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DGAssaultCaptain")
+		Stop
+		Pain.DSConvert:
+			TROO A 0 A_Die("DSConvert")
+		Stop
+		Death.DSConvert:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_JumpIf(ACS_ExecuteWithResult(130, 3) == 1, "Death.DSConvert2")
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain", 0, 0, 0, 0, 0, 0, 0, SXF_SETMASTER)
+			TNT1 A 35
+			TROO A 0 A_DamageChildren(1, "Revived")
+		Stop
+		Death.DSConvert2:
+			TROO A 0 A_UnsetSolid
+			TROO A 0 A_SpawnItemEx("DSAssaultCaptain")
+		Stop
+		Pain.SilverTeamTeleporter:
+			ENE1 A 0 A_GiveInventory("TeleportCount", 1)
+			ENE1 A 0 HealThing(1)
+			ENE1 A 0 A_JumpIfInventory("TeleportCount", ACS_ExecuteWithResult(118, 0, 4, 0), "See")
+			ENE1 A 0 Teleport(2039, 0, 0)
+		Goto See
+	}
+}
+
+Actor DRAlienRedBullet : AlienRedBullet {
+	Damagetype "redmissile"
+}
+
+Actor DBAlienRedBullet : AlienRedBullet {
+	Damagetype "bluemissile"
+}
+
+Actor DGAlienRedBullet : AlienRedBullet {
+	Damagetype "greenmissile"
+}
+
+Actor DSAlienRedBullet : AlienRedBullet {
+	Damagetype "silvermissile"
+}
+

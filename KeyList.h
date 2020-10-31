@@ -12,6 +12,8 @@ constexpr auto uckeyfile = "uc_keys.txt";
 constexpr auto dk_Actor = "ACTOR";
 constexpr auto dk_States = "STATES";
 
+constexpr auto comment_char = "//";
+
 // state termination keywords
 enum {
 	ST_GOTO,
@@ -41,10 +43,14 @@ enum {
 	SYMBOL_DIV,
 	SYMBOL_MUL,
 	SYMBOL_EQUALS,
-	SYMBOL_ASSIGN
+	SYMBOL_GE,
+	SYMBOL_LE,
+	SYMBOL_ASSIGN,
+	SYMBOL_GREATER,
+	SYMBOL_LESS
 };
 
-#define MAX_PUNCTUATION_FOR_SPACING (SYMBOL_ASSIGN + 1)
+#define MAX_PUNCTUATION_FOR_SPACING (SYMBOL_LESS + 1)
 const char* dk_punctuation[MAX_PUNCTUATION_FOR_SPACING] = {
 	",",
 	":",
@@ -53,7 +59,11 @@ const char* dk_punctuation[MAX_PUNCTUATION_FOR_SPACING] = {
 	"/",
 	"*",
 	"==",
-	"="
+	">=",
+	"<=",
+	"=",
+	">",
+	"<"
 };
 
 // these are the keys that will be used for forcing case

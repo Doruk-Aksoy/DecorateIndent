@@ -73,7 +73,7 @@ static inline void trim(std::string& s) {
 
 bool isStateTerminator(const std::string& s) {
 	for (int i = 0; i < MAX_STATE_TERMINATION_KEYS; ++i)
-		if (beginsWith(s, dk_stateTerminate[i]))
+		if (beginsWith(s, dk_stateTerminate[i]) && *(s.end() - 1) != ':')
 			return true;
 	return false;
 }

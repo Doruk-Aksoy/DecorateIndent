@@ -35,6 +35,7 @@ private:
 	bool foundState;
 	bool foundStateTerminator;
 	bool skipTab;
+	bool forceOneTab;
 	bool giveOutput;
 	bool appendSpace;
 	bool includeTabs;
@@ -56,11 +57,12 @@ public:
 		foundState(false),
 		foundStateTerminator(false),
 		skipTab(false),
+		forceOneTab(false),
 		giveOutput(false),
 		appendSpace(false),
 		includeTabs(true),
 		word_states_found(false),
-
+		isComment(false),
 		freePass(0),
 		closing_bracket_count(0),
 		bracket_limit(0)
@@ -74,7 +76,7 @@ public:
 
 	void updateTabs(string& tabs) {
 		tabs = "";
-		for (int i = 0; i < level_of_depth - skipTab; ++i)
+		for (int i = 0; i < level_of_depth + (forceOneTab && !isComment) - skipTab; ++i)
 			tabs += '\t';
 	}
 
@@ -91,26 +93,33 @@ public:
 		}
 		// detect state name
 		if (s.length() >= STATE_TERMINATOR_LENGTH) {
-			if (!foundState && *(s.end() - 1) == ':') {
-				//std::cout << "State found: " << s << "\n";
-				++level_of_depth;
-				foundState = true;
-				skipTab = true;
-			}
-			else {
-				if (!foundState && foundStateTerminator) {
+			bool isStateLabel = *(s.end() - 1) == ':';
+			if (!foundState) {
+				// reset skiptab here if no state has occured or we closed a state with a terminator
+				skipTab = false;
+				if (isStateLabel) {
 					++level_of_depth;
+					foundState = true;
+					skipTab = true;
+					forceOneTab = false;
+				}
+				else if (isStateTerminator(s)) {
+					// this case is for when the previous state declaration has ended, but we got remaining state terminators
+					skipTab = true;
+				}
+				else if(foundStateTerminator) {
+					forceOneTab = true;
 					foundStateTerminator = false;
 				}
-
+			}
+			else {
 				// if the rest aren't more states
-				if (*(s.end() - 1) != ':')
-					skipTab = false;
+				skipTab = isStateLabel;
 				if (isStateTerminator(s)) {
 					--level_of_depth;
 					// if previously had found one
-					if (!foundState && foundStateTerminator)
-						--level_of_depth;
+					//if (foundStateTerminator)
+					//	skipTab = true;
 					foundState = false;
 					foundStateTerminator = true;
 				}
@@ -125,7 +134,10 @@ public:
 			return true;
 		if (sid == SYMBOL_COLON && line.find("\"") != string::npos)
 			return true;
-		if (sid == SYMBOL_DIV && (line.at(index + 1) == '/' || (!std::isdigit(line.at(index - 1)) && !std::isdigit(line.at(index + 1)))))
+		// comment check
+		if (sid == SYMBOL_DIV && (line.at(index + 1) == '/'  || (!std::isdigit(line.at(index - 1)) && !std::isdigit(line.at(index + 1)))))
+			return true;
+		if (sid == SYMBOL_MUL && (line.at(index + 1) == '/' || line.at(index - 1) == '/'))
 			return true;
 		// + symbol and left and right of it isn't number or starts with +
 		if (sid == SYMBOL_PLUS && !std::isdigit(line.at(index - 1)) && !std::isdigit(line.at(index + 1)))
@@ -180,23 +192,25 @@ public:
 	// check for abnormalities within this line, like same line comments etc. and move them up
 	void checkLine(vector<string>& lines, string& line) {
 		size_t n;
+		// dont double copy regular format comments (n != 0)
 		if ((n = line.find(comment_char)) != string::npos) {
-			// enforce a space after the comment begins
-			if (line.at(n + 2) != ' ')
-				line.insert(n + 2, " ");
-			string comment = line.substr(n);
-			lines.push_back(comment);
-			line = line.substr(0, n - 1);
+			if (n != 0) {
+				// enforce a space after the comment begins
+				if (line.at(n + 2) != ' ')
+					line.insert(n + 2, " ");
+				string comment = line.substr(n);
+				lines.push_back(comment);
+				line = line.substr(0, n - 1);
 
-			// comment lines get a free pass
-			freePass = 1;
+				// comment lines get a free pass
+				freePass = 1;
+			}
 			isComment = true;
 		}
 		else
 			isComment = false;
 		lines.push_back(line);
 	}
-
 
 	void formatLine(string& line) {
 		std::string tabs;
@@ -208,29 +222,28 @@ public:
 		// uppercase first char
 		line.at(0) = std::toupper(line.at(0));
 		if (!freePass) {
-			// handle tabs at beginning, we check here because we don't want Actor or States lines to be considered
-			if (level_of_depth) {
-				// put tabs before the string
-				updateTabs(tabs);
-			}
-
 			if (beginsWith(line, dk_Actor)) {
 				// this means this is a new actor definition, reset level of depth to 1
-				// also push this in immediately
+				// also reset tab states
 				linesRead << line;
 				includeTabs = false;
 				giveOutput = false;
 				foundStateTerminator = false;
+				skipTab = false;
+				forceOneTab = false;
 				level_of_depth = 1;
 			}
 
 			if (level_of_depth < 2 && beginsWith(line, dk_States)) {
-				linesRead << tabs << line;
+				linesRead << '\t' << line;
 
+				// restore tab state and increment level of depth by one
 				includeTabs = false;
 				giveOutput = false;
 				++level_of_depth;
+				//std::cout << "\nstates found\n";
 			}
+
 			applyChecks(line);
 		}
 		//std::cout << '\n' << level_of_depth << '\n';
@@ -262,6 +275,10 @@ public:
 			else
 				linesRead << '\n';
 			output.push_back(linesRead.str());
+
+			//std::cout << "line: " << linesRead.str() << " " << level_of_depth  << " " << skipTab << '\n';
+			//system("pause");
+
 			isComment = false;
 			//std::cout << linesRead.str();
 			cleanStream(linesRead);
